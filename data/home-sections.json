@@ -1,0 +1,135 @@
+{
+  "sections": [
+    {
+      "sectionClass": "page-section section-hero",
+      "titleId": "hero-title",
+      "titleLevel": 1,
+      "cardTitleLevel": 2,
+      "eyebrow": "Web 2.0 educativa",
+      "title": "Aprendé, enseñá y conectá en un solo lugar",
+      "lead": "Cursolandia nuclea cursos creados por la comunidad: públicos o privados, gratuitos o de pago, con perfiles, inscripciones y un foro de preguntas y respuestas con respuestas aceptadas.",
+      "cards": [
+        {
+          "icon": "◎",
+          "title": "Cursos de la comunidad",
+          "text": "Cualquier usuario puede proponer un curso con título, descripción, etiquetas, fechas de vigencia y cupo opcional."
+        },
+        {
+          "icon": "◇",
+          "title": "Perfiles vivos",
+          "text": "Datos personales, intereses, antecedentes e imagen que te representa en cada acción dentro del portal."
+        },
+        {
+          "icon": "◈",
+          "title": "Inscripciones inteligentes",
+          "text": "Anotate mientras el curso está activo; en cursos pagos el creador confirma la inscripción pendiente."
+        },
+        {
+          "icon": "✦",
+          "title": "Material compartido",
+          "text": "Los docentes suben archivos adjuntos; el plan gratuito incluye límites de cantidad y tamaño pensados para empezar."
+        }
+      ]
+    },
+    {
+      "id": "cursos",
+      "sectionClass": "page-section section-courses",
+      "titleId": "courses-title",
+      "titleLevel": 2,
+      "cardTitleLevel": 3,
+      "eyebrow": "Crear y tomar cursos",
+      "title": "Tu aula, con reglas claras",
+      "lead": "Los creadores gestionan el contenido y el acceso; los alumnos participan dentro del período de inicio y fin del curso.",
+      "cards": [
+        {
+          "icon": "1",
+          "title": "Hasta 3 cursos activos",
+          "text": "En plan gratuito podés tener hasta tres cursos activos como creador y tres inscripciones simultáneas como alumno."
+        },
+        {
+          "icon": "2",
+          "title": "Público o privado",
+          "text": "Definí visibilidad y costo: cursos abiertos a todos o con acceso restringido, sin cobro o con arancel acordado fuera del sistema."
+        },
+        {
+          "icon": "3",
+          "title": "Vigencia programada",
+          "text": "Fecha de inicio y fin marcan cuándo el curso está activo y cuándo se pueden sumar nuevos participantes."
+        },
+        {
+          "icon": "4",
+          "title": "Búsqueda y recomendaciones",
+          "text": "Encontrá cursos por título o etiquetas y recibí sugerencias según tus intereses declarados en el perfil."
+        }
+      ]
+    },
+    {
+      "id": "foro",
+      "sectionClass": "page-section section-forum",
+      "titleId": "forum-title",
+      "titleLevel": 2,
+      "cardTitleLevel": 3,
+      "eyebrow": "Foro Q&A",
+      "title": "Preguntas con respuesta aceptada",
+      "lead": "Dentro de cada curso, alumnos y docentes conversan en un foro ordenado: destacados, cierre de temas y notificaciones que mantienen a todos al día.",
+      "cards": [
+        {
+          "icon": "?",
+          "title": "Hilos de consulta",
+          "text": "Los alumnos abren preguntas y responden en turnos: no podés contestar dos veces seguidas sin editar o esperar a otro participante.",
+          "accent": "green"
+        },
+        {
+          "icon": "✓",
+          "title": "Respuesta aceptada",
+          "text": "El docente o quien preguntó marca la mejor respuesta, la destaca y cierra el tema, como en los foros profesionales.",
+          "accent": "green"
+        },
+        {
+          "icon": "⚡",
+          "title": "Rol docente",
+          "text": "El creador del curso responde, destaca o elimina preguntas cuando hace falta moderar la conversación."
+        },
+        {
+          "icon": "◉",
+          "title": "Notificaciones",
+          "text": "Avisos al crear preguntas, al responder, al cerrar un hilo o si se elimina una consulta, según quién participó."
+        }
+      ]
+    },
+    {
+      "id": "planes",
+      "sectionClass": "page-section section-plans",
+      "titleId": "plans-title",
+      "titleLevel": 2,
+      "cardTitleLevel": 3,
+      "eyebrow": "Plan gratuito y Pro",
+      "title": "Más alcance cuando lo necesitás",
+      "lead": "El plan Pro amplía límites de cursos, inscripciones y archivos, y hace que tus cursos aparezcan destacados en búsquedas y recomendaciones.",
+      "cards": [
+        {
+          "icon": "○",
+          "title": "Plan gratuito",
+          "text": "Ideal para probar la plataforma: perfiles completos, foro, cursos e inscripciones con topes razonables para la comunidad."
+        },
+        {
+          "icon": "★",
+          "title": "Plan Pro",
+          "text": "Sin tope de cursos activos ni de inscripciones simultáneas, más espacio para materiales y presencia destacada en el catálogo.",
+          "accent": "pro"
+        },
+        {
+          "icon": "↑",
+          "title": "Activación manual",
+          "text": "Desde el perfil enviás comprobante al administrador; él activa Pro con fecha de vencimiento cuando confirma el pago.",
+          "accent": "pro"
+        },
+        {
+          "icon": "⟡",
+          "title": "Cursos en primer plano",
+          "text": "Los cursos de usuarios Pro se muestran destacados al buscar y en las recomendaciones basadas en etiquetas e intereses."
+        }
+      ]
+    }
+  ]
+}
