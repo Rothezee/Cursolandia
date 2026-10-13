@@ -1,0 +1,92 @@
+{
+  "cursos": [
+    {
+      "id": 1,
+      "title": "Introducción a PHP y MySQL",
+      "description": "Fundamentos del backend con PHP procedural y consultas seguras a MySQL. Ideal para la Tecnicatura Web.",
+      "tags": ["php", "mysql", "backend"],
+      "price": "gratis",
+      "access": "publico",
+      "featured": false,
+      "instructor": "María López",
+      "status": "activo"
+    },
+    {
+      "id": 2,
+      "title": "Diseño de interfaces modernas",
+      "description": "Layouts responsivos, glassmorphism y sistemas de diseño coherentes con CSS actual.",
+      "tags": ["css", "ui", "frontend"],
+      "price": "pago",
+      "access": "publico",
+      "featured": true,
+      "instructor": "Carlos Ruiz",
+      "status": "activo"
+    },
+    {
+      "id": 3,
+      "title": "Foros Q&A en aplicaciones web",
+      "description": "Patrones para preguntas, respuestas aceptadas, moderación docente y notificaciones.",
+      "tags": ["foro", "comunidad", "backend"],
+      "price": "gratis",
+      "access": "publico",
+      "featured": false,
+      "instructor": "Ana Ferreyra",
+      "status": "activo"
+    },
+    {
+      "id": 4,
+      "title": "JavaScript para el DOM",
+      "description": "Manipulación del DOM, fetch de APIs y renderizado dinámico sin frameworks prohibidos.",
+      "tags": ["javascript", "frontend"],
+      "price": "gratis",
+      "access": "privado",
+      "featured": false,
+      "instructor": "Diego Soto",
+      "status": "activo"
+    },
+    {
+      "id": 5,
+      "title": "Modelado de datos 3FN",
+      "description": "Entidades, relaciones, integridad referencial y documentación de base de datos para Cursolandia.",
+      "tags": ["mysql", "modelado", "backend"],
+      "price": "pago",
+      "access": "publico",
+      "featured": true,
+      "instructor": "Prof. Integrador",
+      "status": "activo"
+    },
+    {
+      "id": 6,
+      "title": "Accesibilidad y semántica HTML",
+      "description": "Landmarks, ARIA y buenas prácticas para navegación y formularios accesibles.",
+      "tags": ["html", "accesibilidad", "frontend"],
+      "price": "gratis",
+      "access": "publico",
+      "featured": false,
+      "instructor": "Lucía Mena",
+      "status": "activo"
+    },
+    {
+      "id": 7,
+      "title": "Plan Pro: publicar sin límites",
+      "description": "Taller sobre ventajas del plan Pro: más cursos, archivos y visibilidad destacada en el catálogo.",
+      "tags": ["comunidad", "ui"],
+      "price": "pago",
+      "access": "privado",
+      "featured": true,
+      "instructor": "Equipo Cursolandia",
+      "status": "activo"
+    },
+    {
+      "id": 8,
+      "title": "Despliegue en hosting compartido",
+      "description": "Subir el proyecto a un servidor real, configurar MySQL y variables fuera del repositorio.",
+      "tags": ["devops", "php", "mysql"],
+      "price": "gratis",
+      "access": "publico",
+      "featured": false,
+      "instructor": "María López",
+      "status": "activo"
+    }
+  ]
+}
