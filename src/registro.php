@@ -18,7 +18,7 @@ $navPage = 'registro';
         <div class="login-orb login-orb--1" aria-hidden="true"></div>
         <div class="login-orb login-orb--2" aria-hidden="true"></div>
 
-        <section class="login-card login-card--register" aria-labelledby="register-title">
+        <section class="login-card login-card--register glass-panel glass-panel--hero" aria-labelledby="register-title">
             <header class="login-card__header">
                 <p class="section-eyebrow login-card__eyebrow">Comunidad Cursolandia</p>
                 <h1 id="register-title" class="login-card__title">Creá tu cuenta</h1>
