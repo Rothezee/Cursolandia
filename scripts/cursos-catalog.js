@@ -88,14 +88,12 @@ function createCourseCard(curso) {
         tags.appendChild(li);
     });
 
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "course-card__cta";
-    btn.textContent = "Ver curso";
-    btn.disabled = true;
-    btn.title = "Disponible cuando conectes el detalle del curso";
+    const link = document.createElement("a");
+    link.href = `curso.php?id=${curso.id}`;
+    link.className = "btn-outline btn-outline--cyan course-card__cta";
+    link.textContent = "Ver curso";
 
-    article.append(badges, title, desc, meta, tags, btn);
+    article.append(badges, title, desc, meta, tags, link);
     return article;
 }
 
@@ -132,7 +130,7 @@ function render() {
 
     if (list.length === 0) {
         const empty = document.createElement("p");
-        empty.className = "courses-empty";
+        empty.className = "empty-state empty-state--grid";
         empty.textContent =
             "No hay cursos con esos criterios. Probá otro nombre o quitá algún filtro.";
         els.grid.appendChild(empty);
@@ -222,7 +220,7 @@ async function init() {
     } catch (err) {
         console.error(err);
         els.grid.innerHTML =
-            '<p class="courses-empty">No se pudo cargar el catálogo. Abrí la página desde AppServ (no como archivo local).</p>';
+            '<p class="empty-state empty-state--grid">No se pudo cargar el catálogo. Abrí la página desde AppServ (no como archivo local).</p>';
     }
 }
 

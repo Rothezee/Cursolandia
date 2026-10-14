@@ -64,7 +64,7 @@ function createSection(section) {
 function showSectionsError(root, message) {
     root.innerHTML = "";
     const p = document.createElement("p");
-    p.className = "sections-error";
+    p.className = "empty-state";
     p.textContent = message;
     root.appendChild(p);
 }

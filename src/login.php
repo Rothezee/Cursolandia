@@ -18,7 +18,7 @@ $navPage = 'login';
         <div class="login-orb login-orb--1" aria-hidden="true"></div>
         <div class="login-orb login-orb--2" aria-hidden="true"></div>
 
-        <section class="login-card" aria-labelledby="login-title">
+        <section class="login-card glass-panel glass-panel--hero" aria-labelledby="login-title">
             <header class="login-card__header">
                 <p class="section-eyebrow login-card__eyebrow">Acceso</p>
                 <h1 id="login-title" class="login-card__title">Bienvenido de nuevo</h1>

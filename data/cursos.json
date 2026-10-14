@@ -4,89 +4,157 @@
       "id": 1,
       "title": "Introducción a PHP y MySQL",
       "description": "Fundamentos del backend con PHP procedural y consultas seguras a MySQL. Ideal para la Tecnicatura Web.",
+      "longDescription": "Recorré el ciclo completo de una app con PHP y MySQL: formularios, sesiones, consultas preparadas y buenas prácticas de seguridad. Incluye ejercicios orientados al proyecto integrador Cursolandia.",
       "tags": ["php", "mysql", "backend"],
       "price": "gratis",
       "access": "publico",
       "featured": false,
       "instructor": "María López",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-03-01",
+      "fechaFin": "2026-11-30",
+      "cupo": 40,
+      "inscriptos": 28,
+      "materiales": [
+        { "nombre": "Guía PHP — módulo 1.pdf", "tamano": "1.2 MB" },
+        { "nombre": "Script base de datos.sql", "tamano": "48 KB" },
+        { "nombre": "Ejercicios semana 2.zip", "tamano": "320 KB" }
+      ]
     },
     {
       "id": 2,
       "title": "Diseño de interfaces modernas",
       "description": "Layouts responsivos, glassmorphism y sistemas de diseño coherentes con CSS actual.",
+      "longDescription": "Construí interfaces accesibles y consistentes con variables CSS, grids y componentes reutilizables. Aplicamos la misma línea visual del portal para mantener identidad en todo el producto.",
       "tags": ["css", "ui", "frontend"],
       "price": "pago",
       "access": "publico",
       "featured": true,
       "instructor": "Carlos Ruiz",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-04-15",
+      "fechaFin": "2026-10-15",
+      "cupo": null,
+      "inscriptos": 56,
+      "materiales": [
+        { "nombre": "Design tokens Cursolandia.fig", "tamano": "2.1 MB" },
+        { "nombre": "Checklist accesibilidad.pdf", "tamano": "890 KB" }
+      ]
     },
     {
       "id": 3,
       "title": "Foros Q&A en aplicaciones web",
       "description": "Patrones para preguntas, respuestas aceptadas, moderación docente y notificaciones.",
+      "longDescription": "Modelá el foro dentro del curso: estados de hilos, respuesta aceptada, turnos de respuesta y notificaciones a participantes. Caso de estudio directo del enunciado de Cursolandia.",
       "tags": ["foro", "comunidad", "backend"],
       "price": "gratis",
       "access": "publico",
       "featured": false,
       "instructor": "Ana Ferreyra",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-03-10",
+      "fechaFin": "2026-12-01",
+      "cupo": 30,
+      "inscriptos": 22,
+      "materiales": [
+        { "nombre": "Diagrama flujo Q&A.png", "tamano": "240 KB" },
+        { "nombre": "Reglas de negocio foro.pdf", "tamano": "156 KB" }
+      ]
     },
     {
       "id": 4,
       "title": "JavaScript para el DOM",
       "description": "Manipulación del DOM, fetch de APIs y renderizado dinámico sin frameworks prohibidos.",
+      "longDescription": "Desde eventos y plantillas hasta consumo de JSON y validación en cliente. Todo con JavaScript vanilla, alineado a las restricciones del proyecto académico.",
       "tags": ["javascript", "frontend"],
       "price": "gratis",
       "access": "privado",
       "featured": false,
       "instructor": "Diego Soto",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-05-01",
+      "fechaFin": "2026-09-30",
+      "cupo": 15,
+      "inscriptos": 15,
+      "materiales": [
+        { "nombre": "Snippets DOM.js", "tamano": "12 KB" }
+      ]
     },
     {
       "id": 5,
       "title": "Modelado de datos 3FN",
       "description": "Entidades, relaciones, integridad referencial y documentación de base de datos para Cursolandia.",
+      "longDescription": "Diseñá el esquema de usuarios, cursos, inscripciones, foro y planes Pro con normalización y restricciones CHECK. Incluye script SQL de ejemplo restaurable.",
       "tags": ["mysql", "modelado", "backend"],
       "price": "pago",
       "access": "publico",
       "featured": true,
       "instructor": "Prof. Integrador",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-02-01",
+      "fechaFin": "2026-08-31",
+      "cupo": 50,
+      "inscriptos": 41,
+      "materiales": [
+        { "nombre": "ERD Cursolandia.pdf", "tamano": "1.8 MB" },
+        { "nombre": "cursolandia_seed.sql", "tamano": "220 KB" }
+      ]
     },
     {
       "id": 6,
       "title": "Accesibilidad y semántica HTML",
       "description": "Landmarks, ARIA y buenas prácticas para navegación y formularios accesibles.",
+      "longDescription": "Aplicá WCAG en componentes reales del portal: navegación flotante, formularios de registro y foro. Auditoría guiada con lectores de pantalla.",
       "tags": ["html", "accesibilidad", "frontend"],
       "price": "gratis",
       "access": "publico",
       "featured": false,
       "instructor": "Lucía Mena",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-06-01",
+      "fechaFin": "2026-12-20",
+      "cupo": null,
+      "inscriptos": 19,
+      "materiales": []
     },
     {
       "id": 7,
       "title": "Plan Pro: publicar sin límites",
       "description": "Taller sobre ventajas del plan Pro: más cursos, archivos y visibilidad destacada en el catálogo.",
+      "longDescription": "Comparativa gratis vs Pro, límites de archivos, cursos activos e inscripciones. Flujo de activación manual con comprobante al administrador.",
       "tags": ["comunidad", "ui"],
       "price": "pago",
       "access": "privado",
       "featured": true,
       "instructor": "Equipo Cursolandia",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-01-15",
+      "fechaFin": "2026-12-31",
+      "cupo": 20,
+      "inscriptos": 12,
+      "materiales": [
+        { "nombre": "Comparativa planes.pdf", "tamano": "540 KB" }
+      ]
     },
     {
       "id": 8,
       "title": "Despliegue en hosting compartido",
       "description": "Subir el proyecto a un servidor real, configurar MySQL y variables fuera del repositorio.",
+      "longDescription": "Checklist de entrega: repositorio, README, SQL restaurable y servidor en internet. Configuración típica en AppServ y migración a hosting compartido.",
       "tags": ["devops", "php", "mysql"],
       "price": "gratis",
       "access": "publico",
       "featured": false,
       "instructor": "María López",
-      "status": "activo"
+      "status": "activo",
+      "fechaInicio": "2026-07-01",
+      "fechaFin": "2026-11-15",
+      "cupo": 35,
+      "inscriptos": 8,
+      "materiales": [
+        { "nombre": "Plantilla README.md", "tamano": "8 KB" },
+        { "nombre": "env.example.txt", "tamano": "2 KB" }
+      ]
     }
   ]
 }

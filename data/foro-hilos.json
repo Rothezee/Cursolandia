@@ -1,0 +1,117 @@
+{
+  "hilos": [
+    {
+      "id": 1,
+      "cursoId": 1,
+      "curso": "Introducción a PHP y MySQL",
+      "title": "¿Cómo preparo statements con PDO?",
+      "excerpt": "Tengo dudas con bindParam y los tipos cuando la consulta tiene varios placeholders.",
+      "author": "lucia.dev",
+      "role": "alumna",
+      "createdAt": "2026-03-10",
+      "status": "cerrada",
+      "answersCount": 4,
+      "participants": 3,
+      "tags": ["pdo", "mysql"],
+      "answers": [
+        {
+          "id": 101,
+          "author": "maria.lopez",
+          "role": "docente",
+          "body": "Usá bindValue si pasás variables en un loop; bindParam enlaza por referencia y puede sorprenderte.",
+          "createdAt": "2026-03-10",
+          "accepted": false,
+          "isTeacher": true
+        },
+        {
+          "id": 102,
+          "author": "diego.s",
+          "role": "alumno",
+          "body": "Te dejo un ejemplo mínimo con prepare, execute y fetchAll asociativo.",
+          "createdAt": "2026-03-11",
+          "accepted": true,
+          "isTeacher": false
+        },
+        {
+          "id": 103,
+          "author": "lucia.dev",
+          "role": "alumna",
+          "body": "Perfecto, con bindValue me funcionó. ¡Gracias!",
+          "createdAt": "2026-03-11",
+          "accepted": false,
+          "isTeacher": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "cursoId": 2,
+      "curso": "Diseño de interfaces modernas",
+      "title": "Contraste en glassmorphism sobre fondos oscuros",
+      "excerpt": "¿Qué valores de blur y opacidad usan para que el texto siga siendo legible?",
+      "author": "carlos.ui",
+      "role": "alumno",
+      "createdAt": "2026-03-12",
+      "status": "abierta",
+      "answersCount": 2,
+      "participants": 2,
+      "tags": ["css", "accesibilidad"],
+      "answers": [
+        {
+          "id": 201,
+          "author": "ana.f",
+          "role": "alumna",
+          "body": "Probá backdrop-filter con saturate y un borde claro de 1px; ayuda mucho al contraste.",
+          "createdAt": "2026-03-12",
+          "accepted": false,
+          "isTeacher": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "cursoId": 3,
+      "curso": "Foros Q&A en aplicaciones web",
+      "title": "Regla de no responder dos veces seguidas",
+      "excerpt": "¿Cómo lo implementarían en el backend para evitar spam en un hilo?",
+      "author": "prof.integrador",
+      "role": "docente",
+      "createdAt": "2026-03-08",
+      "status": "abierta",
+      "answersCount": 5,
+      "participants": 4,
+      "tags": ["foro", "backend"],
+      "answers": []
+    },
+    {
+      "id": 4,
+      "cursoId": 4,
+      "curso": "JavaScript para el DOM",
+      "title": "Fetch a JSON local vs endpoint PHP",
+      "excerpt": "Para la maqueta uso JSON estático; ¿cuándo conviene pasar a un api/cursos.php?",
+      "author": "juan.fe",
+      "role": "alumno",
+      "createdAt": "2026-03-13",
+      "status": "abierta",
+      "answersCount": 1,
+      "participants": 2,
+      "tags": ["javascript"],
+      "answers": []
+    },
+    {
+      "id": 5,
+      "cursoId": 1,
+      "curso": "Introducción a PHP y MySQL",
+      "title": "Normalización 3FN — tabla inscripciones",
+      "excerpt": "¿La relación alumno-curso debería guardar estado pendiente de pago en la misma tabla?",
+      "author": "sofia.db",
+      "role": "alumna",
+      "createdAt": "2026-03-09",
+      "status": "cerrada",
+      "answersCount": 3,
+      "participants": 3,
+      "tags": ["mysql", "modelado"],
+      "answers": []
+    }
+  ]
+}
