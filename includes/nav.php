@@ -4,8 +4,9 @@ $base = $base ?? '';
 $assetPrefix = $base === '' ? '' : $base . '/';
 $home = $base === '' ? 'index.php' : '../index.php';
 $cursos = $base === '' ? 'src/cursos.php' : 'cursos.php';
+$planes = $base === '' ? 'src/planes.php' : 'planes.php';
 $login = $base === '' ? 'src/login.php' : 'login.php';
-$navPage = $navPage ?? 'inicio'; // inicio | cursos | login | registro
+$navPage = $navPage ?? 'inicio'; // inicio | cursos | planes | login | registro
 ?>
 <nav class="site-nav" aria-label="Principal">
     <div class="nav-inner">
@@ -24,7 +25,9 @@ $navPage = $navPage ?? 'inicio'; // inicio | cursos | login | registro
             <li>
                 <a href="<?= htmlspecialchars($cursos) ?>"<?= $navPage === 'cursos' ? ' class="is-active" aria-current="page"' : '' ?>>Cursos</a>
             </li>
-            <li><a href="<?= htmlspecialchars($home) ?>#planes">Planes</a></li>
+            <li>
+                <a href="<?= htmlspecialchars($planes) ?>"<?= $navPage === 'planes' ? ' class="is-active" aria-current="page"' : '' ?>>Planes</a>
+            </li>
             <li>
                 <a href="<?= htmlspecialchars($login) ?>" class="login-button<?= $navPage === 'login' ? ' is-active' : '' ?>"<?= $navPage === 'login' ? ' aria-current="page"' : '' ?>>Ingresar</a>
             </li>

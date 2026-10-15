@@ -58,6 +58,18 @@ function createSection(section) {
     });
 
     el.append(header, grid);
+
+    if (section.id === "planes") {
+        const cta = document.createElement("p");
+        cta.className = "plans-home-cta";
+        const link = document.createElement("a");
+        link.className = "btn-outline btn-outline--green plans-home-cta__link";
+        link.href = "src/planes.php";
+        link.textContent = "Ver comparativa completa de planes";
+        cta.appendChild(link);
+        el.appendChild(cta);
+    }
+
     return el;
 }
 
