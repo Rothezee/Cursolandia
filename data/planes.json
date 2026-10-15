@@ -1,0 +1,106 @@
+{
+  "eyebrow": "Plan gratuito y Pro",
+  "title": "Más alcance cuando lo necesitás",
+  "lead": "Empezá gratis con la comunidad completa. Si publicás o estudiás mucho, Pro amplía límites de cursos, inscripciones y archivos, y destaca tus cursos en el catálogo.",
+  "plans": [
+    {
+      "id": "gratuito",
+      "name": "Gratuito",
+      "price": "$0",
+      "period": "para siempre",
+      "tagline": "Ideal para probar y participar",
+      "featured": false,
+      "cta": {
+        "label": "Crear cuenta gratis",
+        "href": "registro.php"
+      },
+      "highlights": [
+        "Perfil completo con intereses y avatar",
+        "Foro Q&A en cada curso",
+        "Cursos públicos o privados, gratis o de pago"
+      ]
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "price": "A convenir",
+      "period": "activación con vencimiento",
+      "tagline": "Para docentes y alumnos intensivos",
+      "featured": true,
+      "cta": {
+        "label": "Solicitar Pro",
+        "href": "registro.php",
+        "hint": "Registrate primero; la solicitud con comprobante se habilitará en tu perfil."
+      },
+      "highlights": [
+        "Cursos activos e inscripciones sin tope",
+        "Más archivos y mayor tamaño por material",
+        "Cursos destacados en búsqueda y recomendaciones"
+      ]
+    }
+  ],
+  "comparison": [
+    {
+      "feature": "Cursos activos como creador",
+      "gratuito": "Hasta 3",
+      "pro": "Sin tope"
+    },
+    {
+      "feature": "Inscripciones simultáneas como alumno",
+      "gratuito": "Hasta 3",
+      "pro": "Sin tope"
+    },
+    {
+      "feature": "Archivos por curso",
+      "gratuito": "Hasta 5",
+      "pro": "Hasta 20"
+    },
+    {
+      "feature": "Tamaño máximo por archivo",
+      "gratuito": "5 MB",
+      "pro": "25 MB"
+    },
+    {
+      "feature": "Destacado en catálogo",
+      "gratuito": "—",
+      "pro": "Sí"
+    },
+    {
+      "feature": "Foro Q&A y perfiles",
+      "gratuito": "Incluido",
+      "pro": "Incluido"
+    }
+  ],
+  "activation": {
+    "title": "Activación manual de Pro",
+    "lead": "El pago se acuerda fuera del sistema (transferencia u otro medio). El administrador valida el comprobante y activa tu plan con fecha de vencimiento.",
+    "steps": [
+      {
+        "title": "Registrate",
+        "text": "Creá tu cuenta con el plan gratuito por defecto."
+      },
+      {
+        "title": "Enviá comprobante",
+        "text": "Desde tu perfil subís el comprobante de pago y el período solicitado (próximamente en el portal)."
+      },
+      {
+        "title": "Confirmación admin",
+        "text": "Un administrador revisa el pago y activa Pro hasta la fecha de vencimiento acordada."
+      },
+      {
+        "title": "Disfrutá los beneficios",
+        "text": "Tus cursos pueden marcarse como destacados y aplican los límites ampliados."
+      }
+    ]
+  },
+  "faq": [
+    {
+      "q": "¿Puedo volver al plan gratuito?",
+      "a": "Sí. Al vencer Pro volvés a los límites gratuitos; tus cursos y datos se mantienen."
+    },
+    {
+      "q": "¿Los cursos de pago pasan por Cursolandia?",
+      "a": "No. Los aranceles de cursos pagos se acuerdan con el docente; la plataforma no procesa cobros de inscripción."
+    }
+  ]
+}
