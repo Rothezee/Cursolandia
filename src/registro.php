@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../includes/session.php';
 $base = '..';
 $navPage = 'registro';
 ?>
@@ -31,7 +32,13 @@ $navPage = 'registro';
                 </p>
             </header>
 
-            <form class="auth-form" id="registro-form" action="#" method="post" enctype="multipart/form-data" novalidate>
+            <?php if (isset($_GET['error']) && $_GET['error'] === 'password') : ?>
+                <p class="auth-hint is-error" role="alert">Las contraseñas no coinciden.</p>
+            <?php elseif (isset($_GET['error']) && $_GET['error'] === 'duplicado') : ?>
+                <p class="auth-hint is-error" role="alert">Ese correo o nombre de usuario ya está registrado.</p>
+            <?php endif; ?>
+
+            <form class="auth-form" id="registro-form" action="RegistrarUsuario.php" method="post" enctype="multipart/form-data" novalidate>
                 <fieldset class="auth-section auth-field--animate" style="--i: 1">
                     <legend class="auth-section__title">Datos personales</legend>
                     <div class="auth-grid">

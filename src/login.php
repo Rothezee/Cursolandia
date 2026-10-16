@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../includes/session.php';
 $base = '..';
 $navPage = 'login';
 ?>
@@ -27,16 +28,23 @@ $navPage = 'login';
                 </p>
             </header>
 
-            <form class="auth-form" id="login-form" action="#" method="post" novalidate>
+            <?php if (isset($_GET['error'])) : ?>
+                <p class="auth-hint is-error" role="alert">Usuario o contraseña incorrectos.</p>
+            <?php endif; ?>
+            <?php if (isset($_GET['registro'])) : ?>
+                <p class="auth-hint is-ok" role="status">Cuenta creada. Ya podés ingresar.</p>
+            <?php endif; ?>
+
+            <form class="auth-form" id="login-form" action="loguear.php" method="post" novalidate>
                 <div class="auth-field auth-field--animate" style="--i: 0">
-                    <label class="auth-label" for="login-email">Correo electrónico</label>
+                    <label class="auth-label" for="login-usuario">Usuario</label>
                     <input
-                        type="email"
-                        id="login-email"
-                        name="email"
+                        type="text"
+                        id="login-usuario"
+                        name="usuario"
                         class="auth-input"
-                        placeholder="tu@email.com"
-                        autocomplete="email"
+                        placeholder="admin"
+                        autocomplete="username"
                         required
                     />
                 </div>

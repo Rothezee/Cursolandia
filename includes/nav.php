@@ -6,7 +6,9 @@ $home = $base === '' ? 'index.php' : '../index.php';
 $cursos = $base === '' ? 'src/cursos.php' : 'cursos.php';
 $planes = $base === '' ? 'src/planes.php' : 'planes.php';
 $login = $base === '' ? 'src/login.php' : 'login.php';
-$navPage = $navPage ?? 'inicio'; // inicio | cursos | planes | login | registro
+$perfil = $base === '' ? 'src/perfil.php' : 'perfil.php';
+$navPage = $navPage ?? 'inicio'; // inicio | cursos | planes | login | registro | perfil
+$loggedIn = !empty($_SESSION['usuario_id']);
 ?>
 <nav class="site-nav" aria-label="Principal">
     <div class="nav-inner">
@@ -29,7 +31,11 @@ $navPage = $navPage ?? 'inicio'; // inicio | cursos | planes | login | registro
                 <a href="<?= htmlspecialchars($planes) ?>"<?= $navPage === 'planes' ? ' class="is-active" aria-current="page"' : '' ?>>Planes</a>
             </li>
             <li>
-                <a href="<?= htmlspecialchars($login) ?>" class="login-button<?= $navPage === 'login' ? ' is-active' : '' ?>"<?= $navPage === 'login' ? ' aria-current="page"' : '' ?>>Ingresar</a>
+                <?php if ($loggedIn) : ?>
+                    <a href="<?= htmlspecialchars($perfil) ?>" class="login-button<?= $navPage === 'perfil' ? ' is-active' : '' ?>"<?= $navPage === 'perfil' ? ' aria-current="page"' : '' ?>>Perfil</a>
+                <?php else : ?>
+                    <a href="<?= htmlspecialchars($login) ?>" class="login-button<?= $navPage === 'login' ? ' is-active' : '' ?>"<?= $navPage === 'login' ? ' aria-current="page"' : '' ?>>Ingresar</a>
+                <?php endif; ?>
             </li>
         </ul>
     </div>

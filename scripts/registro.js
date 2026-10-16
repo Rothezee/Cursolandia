@@ -9,26 +9,9 @@ bindPasswordToggle(
 
 const form = document.getElementById("registro-form");
 const password = document.getElementById("reg-password");
-const confirm = document.getElementById("reg-password-confirm");
-const matchHint = document.getElementById("password-match-hint");
+const confirmPassword = document.getElementById("reg-password-confirm");
 const avatarInput = document.getElementById("reg-avatar");
 const avatarPreview = document.getElementById("avatar-preview");
-
-function updatePasswordMatch() {
-    if (!password || !confirm || !matchHint) return;
-    if (!confirm.value) {
-        matchHint.textContent = "";
-        matchHint.classList.remove("is-error", "is-ok");
-        return;
-    }
-    const ok = password.value === confirm.value;
-    matchHint.textContent = ok ? "Las contraseñas coinciden." : "Las contraseñas no coinciden.";
-    matchHint.classList.toggle("is-ok", ok);
-    matchHint.classList.toggle("is-error", !ok);
-}
-
-password?.addEventListener("input", updatePasswordMatch);
-confirm?.addEventListener("input", updatePasswordMatch);
 
 if (avatarInput && avatarPreview) {
     avatarInput.addEventListener("change", () => {
@@ -48,23 +31,11 @@ if (avatarInput && avatarPreview) {
     });
 }
 
-if (form) {
+if (form && password && confirmPassword) {
     form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (password && confirm && password.value !== confirm.value) {
-            updatePasswordMatch();
-            confirm.focus();
-            confirm.classList.add("auth-input--error");
-            return;
+        if (password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert("Las contraseñas no coinciden.");
         }
-        confirm?.classList.remove("auth-input--error");
-
-        const submit = form.querySelector(".auth-submit");
-        submit?.classList.add("is-loading");
-        window.setTimeout(() => {
-            submit?.classList.remove("is-loading");
-            submit?.classList.add("is-success");
-            window.setTimeout(() => submit?.classList.remove("is-success"), 1200);
-        }, 900);
     });
 }
