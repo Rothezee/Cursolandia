@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/../includes/session.php';
 $base = '..';
-$navPage = 'cursos';
+$navPage = 'foro';
 ?>
 <!DOCTYPE html>
 <html lang="es">
