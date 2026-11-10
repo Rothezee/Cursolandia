@@ -365,10 +365,6 @@ main {
     padding-bottom: 3rem;
 }
 
-.sections-root {
-    min-height: 12rem;
-}
-
 .page-section {
     padding: var(--section-gap) 0;
     scroll-margin-top: calc(var(--nav-float-top) + 5.5rem);
