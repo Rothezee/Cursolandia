@@ -10,12 +10,12 @@ if ($usuario === '' || $password === '') {
     exit;
 }
 
-$sql = 'SELECT id, usuario FROM usuarios WHERE usuario = ? AND password = ? LIMIT 1';
+$sql = 'SELECT id, usuario, password FROM usuarios WHERE usuario = ? LIMIT 1';
 $stmt = $conn->prepare($sql);
-$stmt->execute([$usuario, $password]);
+$stmt->execute([$usuario]);
 $user = $stmt->fetch();
 
-if (!$user) {
+if (!$user || !password_verify($password, $user['password'])) {
     header('Location: login.php?error=1');
     exit;
 }

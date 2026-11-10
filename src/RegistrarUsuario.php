@@ -45,7 +45,7 @@ try {
         $intereses !== '' ? $intereses : null,
         $antecedentes !== '' ? $antecedentes : null,
         $avatar,
-        $password,
+        password_hash($password, PASSWORD_DEFAULT),
     ]);
 } catch (PDOException $e) {
     if ((int) $e->errorInfo[1] === 1062) {
