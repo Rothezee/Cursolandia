@@ -28,7 +28,7 @@ $navPage = 'perfil';
                 <p class="login-card__subtitle">Acá vas a poder editar tu perfil, cursos y plan Pro.</p>
             </header>
             <p class="login-card__footer">
-                <a href="salir.php" class="auth-link">Cerrar sesión</a>
+                <a href="../index.php?salir=1" class="auth-link">Cerrar sesión</a>
             </p>
         </section>
     </main>

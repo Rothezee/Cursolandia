@@ -1,7 +1,29 @@
 <?php
 session_start();
+require_once __DIR__ . '/../includes/conn.php';
+
 $base = '..';
 $navPage = 'login';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $usuario = trim($_POST['usuario'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    $sql = 'SELECT id, usuario, password FROM usuarios WHERE usuario = ? LIMIT 1';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$usuario]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['usuario_id'] = (int) $user['id'];
+        $_SESSION['usuario'] = $user['usuario'];
+        header('Location: ../index.php');
+        exit;
+    }
+
+    $error = 'Usuario o contraseña incorrectos.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -28,14 +50,14 @@ $navPage = 'login';
                 </p>
             </header>
 
-            <?php if (isset($_GET['error'])) : ?>
-                <p class="auth-hint is-error" role="alert">Usuario o contraseña incorrectos.</p>
+            <?php if ($error !== '') : ?>
+                <p class="auth-hint is-error" role="alert"><?= htmlspecialchars($error) ?></p>
             <?php endif; ?>
             <?php if (isset($_GET['registro'])) : ?>
                 <p class="auth-hint is-ok" role="status">Cuenta creada. Ya podés ingresar.</p>
             <?php endif; ?>
 
-            <form class="auth-form" id="login-form" action="loguear.php" method="post" novalidate>
+            <form class="auth-form" id="login-form" method="post" novalidate>
                 <div class="auth-field auth-field--animate" style="--i: 0">
                     <label class="auth-label" for="login-usuario">Usuario</label>
                     <input

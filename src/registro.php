@@ -1,7 +1,62 @@
 <?php
 session_start();
+require_once __DIR__ . '/../includes/conn.php';
+
 $base = '..';
 $navPage = 'registro';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre = trim($_POST['nombre'] ?? '');
+    $apellido = trim($_POST['apellido'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
+    $usuario = trim($_POST['usuario'] ?? '');
+    $intereses = trim($_POST['intereses'] ?? '');
+    $antecedentes = trim($_POST['antecedentes'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $passwordConfirm = $_POST['password_confirm'] ?? '';
+
+    if ($password !== $passwordConfirm) {
+        $error = 'Las contraseñas no coinciden.';
+    } else {
+        $avatar = null;
+        if (
+            isset($_FILES['avatar'])
+            && ($_FILES['avatar']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK
+        ) {
+            $avatar = $_FILES['avatar']['name'];
+        }
+
+        $sql = 'INSERT INTO usuarios (
+            nombre, apellido, email, telefono, usuario,
+            intereses, antecedentes, avatar, password
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+        try {
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                $nombre,
+                $apellido,
+                $email,
+                $telefono !== '' ? $telefono : null,
+                $usuario,
+                $intereses !== '' ? $intereses : null,
+                $antecedentes !== '' ? $antecedentes : null,
+                $avatar,
+                password_hash($password, PASSWORD_DEFAULT),
+            ]);
+            header('Location: login.php?registro=1');
+            exit;
+        } catch (PDOException $e) {
+            if ((int) $e->errorInfo[1] === 1062) {
+                $error = 'Ese correo o nombre de usuario ya está registrado.';
+            } else {
+                throw $e;
+            }
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,13 +87,11 @@ $navPage = 'registro';
                 </p>
             </header>
 
-            <?php if (isset($_GET['error']) && $_GET['error'] === 'password') : ?>
-                <p class="auth-hint is-error" role="alert">Las contraseñas no coinciden.</p>
-            <?php elseif (isset($_GET['error']) && $_GET['error'] === 'duplicado') : ?>
-                <p class="auth-hint is-error" role="alert">Ese correo o nombre de usuario ya está registrado.</p>
+            <?php if ($error !== '') : ?>
+                <p class="auth-hint is-error" role="alert"><?= htmlspecialchars($error) ?></p>
             <?php endif; ?>
 
-            <form class="auth-form" id="registro-form" action="RegistrarUsuario.php" method="post" enctype="multipart/form-data" novalidate>
+            <form class="auth-form" id="registro-form" method="post" enctype="multipart/form-data" novalidate>
                 <fieldset class="auth-section auth-field--animate" style="--i: 1">
                     <legend class="auth-section__title">Datos personales</legend>
                     <div class="auth-grid">
