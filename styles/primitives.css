@@ -41,13 +41,11 @@
     margin-bottom: 1.25rem;
 }
 
-.toolbar__search,
 .courses-search {
     display: block;
     margin-bottom: 1.15rem;
 }
 
-.toolbar__filters-row,
 .courses-filters__row {
     display: flex;
     flex-wrap: wrap;
@@ -100,6 +98,7 @@
 }
 
 .filter-chip {
+    display: inline-block;
     padding: 0.4rem 0.85rem;
     font-size: 0.78rem;
     font-family: inherit;
@@ -108,6 +107,7 @@
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 999px;
+    text-decoration: none;
     cursor: pointer;
     transition: color var(--transition), background var(--transition), border-color var(--transition);
 }
@@ -124,7 +124,6 @@
 }
 
 /* —— Formularios —— */
-.field-label,
 .auth-label,
 .courses-search__label,
 .filter-field__label {
@@ -169,7 +168,6 @@
     cursor: pointer;
 }
 
-.field-control--area,
 .auth-textarea {
     resize: vertical;
     min-height: 5.5rem;
@@ -195,12 +193,6 @@
     background: rgba(10, 11, 16, 0.75);
 }
 
-.field-control--error,
-.auth-input--error {
-    border-color: rgba(248, 113, 113, 0.55);
-    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12);
-}
-
 /* —— Enlaces inline —— */
 .text-link,
 .auth-link {
@@ -216,7 +208,6 @@
 }
 
 /* —— Filas de badges / cabeceras de tarjeta —— */
-.badge-row,
 .course-card__badges,
 .forum-thread__badges,
 .forum-answer__badges {
@@ -229,7 +220,6 @@
     margin-bottom: 0.85rem;
 }
 
-.stack-head,
 .forum-thread__head,
 .forum-answer__head {
     display: flex;
@@ -244,7 +234,6 @@
 }
 
 /* —— Badges —— */
-.badge,
 .course-badge,
 .forum-badge {
     display: inline-block;
@@ -257,14 +246,12 @@
     border: 1px solid transparent;
 }
 
-.badge--blue,
 .forum-badge--abierta {
     color: var(--brand-blue);
     background: rgba(96, 165, 250, 0.12);
     border-color: rgba(96, 165, 250, 0.28);
 }
 
-.badge--green,
 .course-badge--gratis,
 .forum-badge--accepted {
     color: var(--brand-green);
@@ -272,28 +259,24 @@
     border-color: rgba(52, 211, 153, 0.3);
 }
 
-.badge--amber,
 .course-badge--pago {
     color: #fcd34d;
     background: rgba(251, 191, 36, 0.1);
     border-color: rgba(251, 191, 36, 0.28);
 }
 
-.badge--pro,
 .course-badge--pro {
     color: var(--brand-pro);
     background: rgba(251, 191, 36, 0.12);
     border-color: rgba(251, 191, 36, 0.35);
 }
 
-.badge--muted,
 .forum-badge--cerrada {
     color: rgba(242, 245, 247, 0.55);
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-.badge--violet,
 .forum-badge--teacher {
     color: var(--brand-violet);
     background: rgba(167, 139, 250, 0.12);
@@ -301,43 +284,26 @@
 }
 
 /* —— Etiquetas (tags) —— */
-.tag-list,
-.course-card__tags,
-.forum-thread__tags {
+.course-card__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
     list-style: none;
-    margin: 0;
+    margin: 0.75rem 0 0;
     padding: 0;
 }
 
-.course-card__tags {
-    margin-top: 0.75rem;
-}
-
-.tag-list li,
-.course-card__tags li,
-.forum-thread__tags li {
+.course-card__tags li {
     padding: 0.2rem 0.5rem;
     font-size: 0.72rem;
     border-radius: 0.35rem;
-}
-
-.course-card__tags li {
     color: var(--brand-blue);
     background: rgba(96, 165, 250, 0.08);
 }
 
-.forum-thread__tags li {
-    color: var(--brand-green);
-    background: rgba(52, 211, 153, 0.08);
-}
-
 /* —— Migas / cabeceras en fila —— */
 .page-breadcrumb,
-.curso-breadcrumb,
-.forum-breadcrumb {
+.curso-breadcrumb {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -352,7 +318,6 @@
 }
 
 .split-header,
-.page-foro-header__row,
 .curso-foro-header {
     display: flex;
     flex-wrap: wrap;
@@ -408,8 +373,8 @@
 }
 
 /* —— Botón ghost —— */
-.btn-ghost,
 .filters-reset,
+.filters-apply,
 .forum-action-btn {
     padding: 0.55rem 1rem;
     font-size: 0.75rem;
@@ -420,6 +385,7 @@
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 999px;
+    text-decoration: none;
     cursor: pointer;
     transition: color var(--transition), border-color var(--transition), background var(--transition);
 }
@@ -437,8 +403,8 @@
     border-color: rgba(248, 113, 113, 0.35);
 }
 
-.btn-ghost:hover,
 .filters-reset:hover,
+.filters-apply:hover,
 .forum-action-btn:hover:not(:disabled) {
     color: var(--text);
     border-color: rgba(96, 165, 250, 0.35);

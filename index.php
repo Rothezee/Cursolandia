@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+if (isset($_GET['salir'])) {
+    session_destroy();
+    header('Location: index.php');
+    exit;
+}
+
 $base = '';
 $navPage = 'inicio';
 ?>

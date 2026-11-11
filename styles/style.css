@@ -2,7 +2,6 @@
 
 :root {
     --bg-deep: #0a0b10;
-    --bg-glow: #12141f;
     --nav-surface: rgba(18, 20, 28, 0.55);
     --nav-border: rgba(255, 255, 255, 0.1);
     --nav-highlight: rgba(255, 255, 255, 0.06);
@@ -222,23 +221,6 @@ body {
     border-color: var(--accent);
     box-shadow: 0 0 24px var(--accent-glow);
     transform: translateY(-1px);
-}
-
-.join-button {
-    color: var(--bg-deep);
-    background-color: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 999px;
-    padding: 0.55rem 1.25rem;
-    font-size: 0.78rem;
-    cursor: pointer;
-    transition: all var(--transition);
-}
-
-.join-button:hover {
-    color: var(--text);
-    background-color: transparent;
-    border-color: rgba(255, 255, 255, 0.35);
 }
 
 .hamburger div {
@@ -541,7 +523,6 @@ main {
 }
 
 .section-forum .section-eyebrow,
-.section-forum-eyebrow,
 .page-foro .section-eyebrow {
     color: var(--brand-green);
     background: rgba(52, 211, 153, 0.1);
@@ -1124,30 +1105,6 @@ main {
     transform: translateX(120%);
 }
 
-.auth-submit.is-loading {
-    pointer-events: none;
-    opacity: 0.85;
-}
-
-.auth-submit.is-loading .auth-submit__text {
-    animation: login-pulse 0.8s ease-in-out infinite;
-}
-
-@keyframes login-pulse {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.45;
-    }
-}
-
-.auth-submit.is-success {
-    background: linear-gradient(135deg, var(--brand-green) 0%, #10b981 100%);
-    box-shadow: 0 0 24px rgba(52, 211, 153, 0.35);
-}
-
 .login-card__footer {
     margin-top: 1.5rem;
     text-align: center;
@@ -1356,12 +1313,6 @@ main {
 .forum-thread:hover {
     transform: translateY(-2px);
     border-color: rgba(52, 211, 153, 0.22);
-}
-
-.forum-thread__course {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
 }
 
 .forum-thread__title {
@@ -1784,10 +1735,6 @@ main {
     color: rgba(242, 245, 247, 0.4);
 }
 
-.forum-answer__actions {
-    padding-top: 0.35rem;
-}
-
 .forum-reply__title {
     font-size: 1.05rem;
     font-weight: 600;
@@ -1799,12 +1746,6 @@ main {
     flex-direction: column;
     gap: 0.75rem;
     margin-top: 0.75rem;
-}
-
-.forum-reply-form.is-disabled {
-    opacity: 0.45;
-    pointer-events: none;
-    filter: grayscale(0.3);
 }
 
 @media (prefers-reduced-motion: reduce) {

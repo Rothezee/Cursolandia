@@ -16,18 +16,3 @@ function bindPasswordToggle(toggleBtn, passwordInput) {
         if (hideLabel) hideLabel.hidden = visible;
     });
 }
-
-function bindSubmitDemo(form) {
-    if (!form) return;
-
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const submit = form.querySelector(".auth-submit");
-        submit?.classList.add("is-loading");
-        window.setTimeout(() => {
-            submit?.classList.remove("is-loading");
-            submit?.classList.add("is-success");
-            window.setTimeout(() => submit?.classList.remove("is-success"), 1200);
-        }, 900);
-    });
-}
