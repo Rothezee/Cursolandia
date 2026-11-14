@@ -1,8 +1,5 @@
 <?php
-$servername = 'localhost';
-$dbname = 'cursolandia';
-$username = 'root';
-$password = '39090169'; 
+require __DIR__ . '/config.php';
 
 $dsn = "mysql:host={$servername};dbname={$dbname};charset=utf8mb4";
 
