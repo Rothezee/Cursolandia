@@ -7,6 +7,7 @@ $cursos = $base === '' ? 'src/cursos.php' : 'cursos.php';
 $planes = $base === '' ? 'src/planes.php' : 'planes.php';
 $login = $base === '' ? 'src/login.php' : 'login.php';
 $perfil = $base === '' ? 'src/perfil.php' : 'perfil.php';
+$misCursosUrl = $base === '' ? 'src/mis-cursos.php' : 'mis-cursos.php';
 $navPage = $navPage ?? 'inicio'; // inicio | cursos | planes | login | registro | perfil
 $loggedIn = !empty($_SESSION['usuario_id']);
 ?>
@@ -30,6 +31,11 @@ $loggedIn = !empty($_SESSION['usuario_id']);
             <li>
                 <a href="<?= htmlspecialchars($planes) ?>"<?= $navPage === 'planes' ? ' class="is-active" aria-current="page"' : '' ?>>Planes</a>
             </li>
+            <?php if ($loggedIn) : ?>
+                <li>
+                    <a href="<?= htmlspecialchars($misCursosUrl) ?>"<?= $navPage === 'mis-cursos' ? ' class="is-active" aria-current="page"' : '' ?>>Mis cursos</a>
+                </li>
+            <?php endif; ?>
             <li>
                 <?php if ($loggedIn) : ?>
                     <a href="<?= htmlspecialchars($perfil) ?>" class="login-button<?= $navPage === 'perfil' ? ' is-active' : '' ?>"<?= $navPage === 'perfil' ? ' aria-current="page"' : '' ?>>Perfil</a>

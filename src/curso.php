@@ -90,6 +90,10 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
             <span><?= $curso ? htmlspecialchars($curso['titulo']) : 'Curso' ?></span>
         </nav>
 
+        <?php if ($curso && isset($_GET['creado'])) : ?>
+            <p class="auth-hint is-ok" role="status">Curso publicado correctamente.</p>
+        <?php endif; ?>
+
         <?php if (!$curso) : ?>
             <p class="empty-state empty-state--compact">No encontramos ese curso. Volvé al catálogo y elegí uno.</p>
         <?php else : ?>

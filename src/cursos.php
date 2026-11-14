@@ -103,10 +103,10 @@ $urlTodas = 'cursos.php' . ($filtrosBase ? '?' . http_build_query($filtrosBase) 
 
     <main class="page-shell">
         <header class="section-header page-cursos-header">
-            <p class="section-eyebrow">CatÃ¡logo</p>
+            <p class="section-eyebrow">Catalogo</p>
             <h1 class="section-title">Explorar cursos</h1>
             <p class="section-lead">
-                BuscÃ¡ por nombre o etiqueta y combinÃ¡ filtros de precio, acceso y cursos destacados del plan Pro.
+                Busca por nombre o etiqueta y combina filtros de precio, acceso y cursos destacados del plan Pro.
             </p>
         </header>
 

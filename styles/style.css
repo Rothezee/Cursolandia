@@ -1088,6 +1088,12 @@ main {
     transform: translateY(0);
 }
 
+.auth-submit--link {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
 .auth-submit__shine {
     position: absolute;
     inset: 0;
