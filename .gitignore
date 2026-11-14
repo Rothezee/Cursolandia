@@ -1,3 +1,6 @@
 # Planificación local (documentos de trabajo, no versionar)
 Planificacion/
 planificacion/
+
+# Credenciales locales (no versionar)
+includes/config.php
