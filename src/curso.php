@@ -11,6 +11,15 @@ $tagsCurso = [];
 $materiales = [];
 $preguntas = [];
 $inscriptos = 0;
+$logueado = !empty($_SESSION['usuario_id']);
+$usuarioId = $logueado ? (int) $_SESSION['usuario_id'] : 0;
+$esCreador = false;
+$esPro = false;
+$inscripcionEstado = false;
+$puedePreguntar = false;
+$inscripcionesPendientes = [];
+$mensaje = '';
+$hoy = date('Y-m-d');
 
 if ($id > 0) {
     $stmt = $conn->prepare('SELECT c.*, u.nombre, u.apellido, u.usuario, u.plan
@@ -21,6 +30,107 @@ if ($id > 0) {
     $curso = $stmt->fetch();
 
     if ($curso) {
+        $esCreador = $usuarioId === (int) $curso['creador_id'];
+
+        if ($logueado) {
+            $esPro = $conn->query("SELECT plan FROM usuarios WHERE id = $usuarioId")->fetchColumn() === 'pro';
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $accion = $_POST['accion'] ?? '';
+
+            if ($accion === 'inscribirse') {
+                $yaInscripto = $conn->query("SELECT COUNT(*) FROM inscripciones
+                    WHERE curso_id = $id AND usuario_id = $usuarioId")->fetchColumn();
+                $confirmados = $conn->query("SELECT COUNT(*) FROM inscripciones
+                    WHERE curso_id = $id AND estado = 'confirmada'")->fetchColumn();
+                $activosDelUsuario = $conn->query("SELECT COUNT(*) FROM inscripciones i
+                    JOIN cursos c ON c.id = i.curso_id
+                    WHERE i.usuario_id = $usuarioId AND i.estado = 'confirmada'
+                    AND CURDATE() BETWEEN c.fecha_inicio AND c.fecha_fin")->fetchColumn();
+
+                if (!$logueado) {
+                    $mensaje = 'Necesitás iniciar sesión para inscribirte.';
+                } elseif ($esCreador) {
+                    $mensaje = 'No podés inscribirte en tu propio curso.';
+                } elseif ($hoy < $curso['fecha_inicio'] || $hoy > $curso['fecha_fin']) {
+                    $mensaje = 'El curso no está dentro del período de inscripción.';
+                } elseif ($yaInscripto > 0) {
+                    $mensaje = 'Ya tenés una inscripción en este curso.';
+                } elseif ($curso['cupo'] !== null && $confirmados >= $curso['cupo']) {
+                    $mensaje = 'El curso ya completó su cupo.';
+                } elseif (!$esPro && $activosDelUsuario >= 3) {
+                    $mensaje = 'El plan gratuito permite estar en hasta 3 cursos activos a la vez.';
+                } else {
+                    $nuevoEstado = $curso['costo'] > 0 ? 'pendiente' : 'confirmada';
+                    $conn->query("INSERT INTO inscripciones (curso_id, usuario_id, estado)
+                        VALUES ($id, $usuarioId, '$nuevoEstado')");
+                    header('Location: curso.php?id=' . $id . '&ok=' . ($nuevoEstado === 'confirmada' ? 'inscripto' : 'pendiente'));
+                    exit;
+                }
+            }
+
+            if ($accion === 'confirmar' && $esCreador) {
+                $inscripcionId = (int) ($_POST['inscripcion_id'] ?? 0);
+                $alumno = $conn->query("SELECT usuario_id FROM inscripciones
+                    WHERE id = $inscripcionId AND curso_id = $id")->fetch();
+                $confirmados = $conn->query("SELECT COUNT(*) FROM inscripciones
+                    WHERE curso_id = $id AND estado = 'confirmada'")->fetchColumn();
+
+                if (!$alumno) {
+                    $mensaje = 'No encontramos esa inscripción.';
+                } elseif ($curso['cupo'] !== null && $confirmados >= $curso['cupo']) {
+                    $mensaje = 'El curso ya completó su cupo.';
+                } else {
+                    $alumnoId = (int) $alumno['usuario_id'];
+                    $activosAlumno = $conn->query("SELECT COUNT(*) FROM inscripciones i
+                        JOIN cursos c ON c.id = i.curso_id
+                        WHERE i.usuario_id = $alumnoId AND i.estado = 'confirmada' AND i.id <> $inscripcionId
+                        AND CURDATE() BETWEEN c.fecha_inicio AND c.fecha_fin")->fetchColumn();
+                    $planAlumno = $conn->query("SELECT plan FROM usuarios WHERE id = $alumnoId")->fetchColumn();
+
+                    if ($planAlumno !== 'pro' && $activosAlumno >= 3) {
+                        $mensaje = 'El alumno ya tiene 3 cursos activos en el plan gratuito.';
+                    } else {
+                        $conn->query("UPDATE inscripciones SET estado = 'confirmada'
+                            WHERE id = $inscripcionId AND curso_id = $id");
+                        header('Location: curso.php?id=' . $id . '&ok=confirmado');
+                        exit;
+                    }
+                }
+            }
+
+            if ($accion === 'rechazar' && $esCreador) {
+                $inscripcionId = (int) ($_POST['inscripcion_id'] ?? 0);
+                $conn->query("DELETE FROM inscripciones
+                    WHERE id = $inscripcionId AND curso_id = $id");
+                header('Location: curso.php?id=' . $id . '&ok=rechazado');
+                exit;
+            }
+
+            if ($accion === 'preguntar') {
+                $tituloPregunta = trim($_POST['titulo'] ?? '');
+                $cuerpoPregunta = trim($_POST['cuerpo'] ?? '');
+                $estadoInscripcion = $conn->query("SELECT estado FROM inscripciones
+                    WHERE curso_id = $id AND usuario_id = $usuarioId LIMIT 1")->fetchColumn();
+
+                if (!$logueado) {
+                    $mensaje = 'Necesitás iniciar sesión para preguntar.';
+                } elseif (!$esCreador && $estadoInscripcion !== 'confirmada') {
+                    $mensaje = 'Solo los participantes inscriptos pueden preguntar.';
+                } elseif ($tituloPregunta === '' || $cuerpoPregunta === '') {
+                    $mensaje = 'Completá el título y el texto de la pregunta.';
+                } else {
+                    $tituloSql = $conn->quote($tituloPregunta);
+                    $cuerpoSql = $conn->quote($cuerpoPregunta);
+                    $conn->query("INSERT INTO preguntas (curso_id, autor_id, titulo, cuerpo)
+                        VALUES ($id, $usuarioId, $tituloSql, $cuerpoSql)");
+                    header('Location: curso.php?id=' . $id . '&ok=pregunta#foro');
+                    exit;
+                }
+            }
+        }
+
         $stmt = $conn->prepare('SELECT e.nombre
             FROM curso_etiquetas ce
             JOIN etiquetas e ON e.id = ce.etiqueta_id
@@ -47,6 +157,34 @@ if ($id > 0) {
         $stmt->execute([$id]);
         $inscriptos = (int) $stmt->fetchColumn();
     }
+}
+
+if ($curso && $logueado) {
+    $inscripcionEstado = $conn->query("SELECT estado FROM inscripciones
+        WHERE curso_id = $id AND usuario_id = $usuarioId LIMIT 1")->fetchColumn();
+}
+
+$puedePreguntar = $curso && $logueado && ($esCreador || $inscripcionEstado === 'confirmada');
+
+if ($curso && $esCreador) {
+    $inscripcionesPendientes = $conn->query("SELECT i.id, u.nombre, u.apellido, u.usuario
+        FROM inscripciones i
+        JOIN usuarios u ON u.id = i.usuario_id
+        WHERE i.curso_id = $id AND i.estado = 'pendiente'
+        ORDER BY i.id")->fetchAll();
+}
+
+$mensajesOk = [
+    'inscripto' => 'Inscripción confirmada.',
+    'pendiente' => 'Solicitud enviada. Queda pendiente hasta que el docente confirme el pago.',
+    'confirmado' => 'Inscripción confirmada por el docente.',
+    'rechazado' => 'Solicitud rechazada.',
+    'pregunta' => 'Pregunta publicada.',
+    'creado' => 'Curso publicado correctamente.',
+];
+$ok = $_GET['ok'] ?? '';
+if ($ok === '' && isset($_GET['creado'])) {
+    $ok = 'creado';
 }
 
 function fechaCorta($fecha)
@@ -90,8 +228,11 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
             <span><?= $curso ? htmlspecialchars($curso['titulo']) : 'Curso' ?></span>
         </nav>
 
-        <?php if ($curso && isset($_GET['creado'])) : ?>
-            <p class="auth-hint is-ok" role="status">Curso publicado correctamente.</p>
+        <?php if ($mensaje !== '') : ?>
+            <p class="auth-hint is-error" role="alert"><?= htmlspecialchars($mensaje) ?></p>
+        <?php endif; ?>
+        <?php if (isset($mensajesOk[$ok])) : ?>
+            <p class="auth-hint is-ok" role="status"><?= $mensajesOk[$ok] ?></p>
         <?php endif; ?>
 
         <?php if (!$curso) : ?>
@@ -161,6 +302,34 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
                                 </div>
                             </div>
                         </div>
+
+                        <?php if ($esCreador && $inscripcionesPendientes) : ?>
+                            <div class="curso-stats card">
+                                <h2 class="curso-info__title">Inscripciones pendientes</h2>
+                                <ul class="curso-pending-list">
+                                    <?php foreach ($inscripcionesPendientes as $pendiente) : ?>
+                                        <li>
+                                            <span>
+                                                <?= htmlspecialchars($pendiente['nombre'] . ' ' . $pendiente['apellido']) ?>
+                                                <small>(<?= htmlspecialchars($pendiente['usuario']) ?>)</small>
+                                            </span>
+                                            <span class="curso-pending-actions">
+                                                <form method="post" action="curso.php?id=<?= (int) $curso['id'] ?>">
+                                                    <input type="hidden" name="accion" value="confirmar"/>
+                                                    <input type="hidden" name="inscripcion_id" value="<?= (int) $pendiente['id'] ?>"/>
+                                                    <button type="submit" class="forum-action-btn">Confirmar</button>
+                                                </form>
+                                                <form method="post" action="curso.php?id=<?= (int) $curso['id'] ?>">
+                                                    <input type="hidden" name="accion" value="rechazar"/>
+                                                    <input type="hidden" name="inscripcion_id" value="<?= (int) $pendiente['id'] ?>"/>
+                                                    <button type="submit" class="forum-action-btn forum-action-btn--danger">Rechazar</button>
+                                                </form>
+                                            </span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
                     </section>
 
                     <section class="curso-panel" id="panel-material" role="tabpanel" aria-labelledby="tab-material" hidden>
@@ -193,10 +362,46 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
                                     Preguntas y respuestas solo para participantes inscriptos. Respuestas aceptadas y moderación docente.
                                 </p>
                             </div>
-                            <button type="button" class="forum-new-btn" disabled title="Próximamente: requiere iniciar sesión">
-                                Nueva pregunta
-                            </button>
+                            <?php if (!$puedePreguntar) : ?>
+                                <p class="auth-hint">
+                                    <?= $logueado ? 'Inscribite y confirmá tu participación para preguntar.' : 'Iniciá sesión y anotate para preguntar.' ?>
+                                </p>
+                            <?php endif; ?>
                         </header>
+
+                        <?php if ($puedePreguntar) : ?>
+                            <details class="card forum-new-question">
+                                <summary class="forum-new-btn">Nueva pregunta</summary>
+                                <form class="forum-reply-form" method="post" action="curso.php?id=<?= (int) $curso['id'] ?>">
+                                    <input type="hidden" name="accion" value="preguntar"/>
+                                    <div class="auth-field">
+                                        <label class="auth-label" for="nueva-pregunta-titulo">Título</label>
+                                        <input
+                                            type="text"
+                                            id="nueva-pregunta-titulo"
+                                            name="titulo"
+                                            class="auth-input"
+                                            maxlength="150"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="auth-field">
+                                        <label class="auth-label" for="nueva-pregunta-cuerpo">Pregunta</label>
+                                        <textarea
+                                            id="nueva-pregunta-cuerpo"
+                                            name="cuerpo"
+                                            class="auth-input auth-textarea"
+                                            rows="4"
+                                            required
+                                        ></textarea>
+                                    </div>
+                                    <button type="submit" class="auth-submit">
+                                        <span class="auth-submit__text">Publicar pregunta</span>
+                                        <span class="auth-submit__shine" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </details>
+                        <?php endif; ?>
                         <div class="glass-panel toolbar" role="search">
                             <label class="courses-search" for="forum-search">
                                 <span class="courses-search__label">Buscar en este foro</span>
@@ -253,21 +458,37 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
                 <aside class="curso-sidebar card">
                     <p class="curso-sidebar__price"><?= $esPago ? 'Curso pago' : 'Gratis' ?></p>
                     <p class="curso-sidebar__access"><?= $curso['acceso'] === 'publico' ? 'Público' : 'Privado' ?></p>
-                    <button type="button" class="auth-submit curso-enroll-btn" disabled title="Próximamente con sesión iniciada">
-                        <span class="auth-submit__text">
-                            <?= !$hayCupo ? 'Cupo completo' : ($esPago ? 'Solicitar inscripción' : 'Inscribirme') ?>
-                        </span>
-                        <span class="auth-submit__shine" aria-hidden="true"></span>
-                    </button>
-                    <p class="curso-sidebar__note">
-                        <?php if (!$hayCupo) : ?>
-                            No quedan lugares. Consultá otras fechas o cursos.
-                        <?php elseif ($esPago) : ?>
-                            En cursos pagos la inscripción queda pendiente hasta que el docente confirme el pago (gestión externa).
-                        <?php else : ?>
-                            Necesitás iniciar sesión para anotarte (próximamente).
-                        <?php endif; ?>
-                    </p>
+                    <?php if ($esCreador) : ?>
+                        <p class="curso-sidebar__note">Sos el docente de este curso.</p>
+                    <?php elseif ($inscripcionEstado === 'confirmada') : ?>
+                        <p class="auth-hint is-ok">Ya estás inscripto en este curso.</p>
+                    <?php elseif ($inscripcionEstado === 'pendiente') : ?>
+                        <p class="auth-hint">Tu inscripción está pendiente de confirmación del docente.</p>
+                    <?php elseif (!$logueado) : ?>
+                        <a href="login.php" class="auth-submit auth-submit--link">
+                            <span class="auth-submit__text">Ingresar para inscribirme</span>
+                            <span class="auth-submit__shine" aria-hidden="true"></span>
+                        </a>
+                    <?php elseif (!$activo) : ?>
+                        <p class="curso-sidebar__note">El curso no está dentro del período de inscripción.</p>
+                    <?php elseif (!$hayCupo) : ?>
+                        <p class="curso-sidebar__note">No quedan lugares. Consultá otras fechas o cursos.</p>
+                    <?php else : ?>
+                        <form method="post" action="curso.php?id=<?= (int) $curso['id'] ?>">
+                            <input type="hidden" name="accion" value="inscribirse"/>
+                            <button type="submit" class="auth-submit curso-enroll-btn">
+                                <span class="auth-submit__text"><?= $esPago ? 'Solicitar inscripción' : 'Inscribirme' ?></span>
+                                <span class="auth-submit__shine" aria-hidden="true"></span>
+                            </button>
+                        </form>
+                        <p class="curso-sidebar__note">
+                            <?php if ($esPago) : ?>
+                                En cursos pagos la inscripción queda pendiente hasta que el docente confirme el pago (gestión externa).
+                            <?php else : ?>
+                                La inscripción es inmediata y gratuita.
+                            <?php endif; ?>
+                        </p>
+                    <?php endif; ?>
                     <ul class="curso-sidebar__stats">
                         <li><span>Inscriptos</span><strong><?= $inscriptos ?></strong></li>
                         <li><span>Preguntas en el foro</span><strong><?= count($preguntas) ?></strong></li>
