@@ -28,6 +28,11 @@ $navPage = 'perfil';
                 <p class="login-card__subtitle">Acá vas a poder editar tu perfil, cursos y plan Pro.</p>
             </header>
             <p class="login-card__footer">
+                <a href="mis-cursos.php" class="auth-link">Mis cursos</a>
+                ·
+                <a href="crear-curso.php" class="auth-link">Crear curso</a>
+            </p>
+            <p class="login-card__footer">
                 <a href="../index.php?salir=1" class="auth-link">Cerrar sesión</a>
             </p>
         </section>
