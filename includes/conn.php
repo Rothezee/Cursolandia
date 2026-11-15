@@ -11,3 +11,7 @@ try {
 } catch (PDOException $e) {
     die('Conexión fallida: ' . $e->getMessage());
 }
+
+// Si un plan Pro venció, vuelve automáticamente al plan gratuito.
+$conn->query("UPDATE usuarios SET plan = 'gratuito', plan_vencimiento = NULL
+    WHERE plan = 'pro' AND plan_vencimiento IS NOT NULL AND plan_vencimiento < CURDATE()");

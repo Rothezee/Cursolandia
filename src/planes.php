@@ -52,12 +52,19 @@ $navPage = 'planes';
                     <li>Más archivos y mayor tamaño por material</li>
                     <li>Cursos destacados en búsqueda y recomendaciones</li>
                 </ul>
-                <a href="registro.php" class="auth-submit plan-card__cta">
-                    <span class="auth-submit__text">Solicitar Pro</span>
-                    <span class="auth-submit__shine" aria-hidden="true"></span>
-                </a>
+                <?php if (!empty($_SESSION['usuario_id'])) : ?>
+                    <a href="solicitar-pro.php" class="auth-submit plan-card__cta">
+                        <span class="auth-submit__text">Solicitar Pro</span>
+                        <span class="auth-submit__shine" aria-hidden="true"></span>
+                    </a>
+                <?php else : ?>
+                    <a href="registro.php" class="auth-submit plan-card__cta">
+                        <span class="auth-submit__text">Crear cuenta y solicitar</span>
+                        <span class="auth-submit__shine" aria-hidden="true"></span>
+                    </a>
+                <?php endif; ?>
                 <p class="plan-card__hint auth-hint">
-                    Registrate primero; la solicitud con comprobante se habilitará en tu perfil.
+                    La solicitud se envía con el comprobante de pago y la revisa un administrador.
                 </p>
             </article>
         </div>
@@ -123,7 +130,7 @@ $navPage = 'planes';
                 <li class="plans-step card">
                     <span class="plans-step__num">2</span>
                     <h3 class="plans-step__title">Enviá comprobante</h3>
-                    <p class="plans-step__text">Desde tu perfil subís el comprobante de pago y el período solicitado (próximamente en el portal).</p>
+                    <p class="plans-step__text">Desde tu perfil subís el comprobante de pago (JPG, PNG o PDF, hasta 5 MB).</p>
                 </li>
                 <li class="plans-step card">
                     <span class="plans-step__num">3</span>

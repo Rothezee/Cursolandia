@@ -20,6 +20,8 @@ PHP procedural + MySQL (PDO), HTML, CSS y JavaScript sin frameworks ni Composer.
 - **Mis cursos**: listado de los cursos creados, estado, fechas, inscriptos y preguntas.
 - **Foro del curso**: los inscriptos y el docente pueden publicar preguntas; cualquiera puede leer.
 - **Respuestas** en cada hilo, con la regla de no responder dos veces seguidas en el mismo hilo.
+- **Plan Pro**: el usuario sube un comprobante de pago, el administrador aprueba o rechaza desde `src/admin-pro.php`, se activa Pro con vencimiento (1, 3, 6 o 12 meses) y al vencer vuelve solo al plan gratuito.
+- **Perfil**: muestra el plan actual, su vencimiento y los accesos rápidos.
 
 ## Estructura
 
@@ -41,6 +43,10 @@ src/
   registro.php       Registro
   perfil.php         Perfil del usuario
   planes.php         Planes
+  solicitar-pro.php  Envío de comprobante para el plan Pro
+  admin-pro.php      Panel del administrador para aprobar Pro
+uploads/
+  comprobantes/      Comprobantes subidos (no versionados)
 styles/              Hojas de estilo
 scripts/             JavaScript del front
 img/                 Logos e imágenes
@@ -94,7 +100,7 @@ Todos usan la contraseña **`demo1234`**.
 | lucia   | usuario | gratuito |
 | diego   | usuario | Pro      |
 
-`maria` y `carlos` ya tienen cursos creados. `diego` tiene una inscripción pendiente en el curso 2.
+`maria` y `carlos` ya tienen cursos creados. `diego` tiene una inscripción pendiente en el curso 2. `admin` accede al panel **Admin Pro** desde su perfil.
 
 ## Reglas de negocio principales
 
@@ -122,13 +128,12 @@ Todos usan la contraseña **`demo1234`**.
 
 ## Estado del proyecto
 
-Implementado y probado: catálogo, detalle, login, registro, inscripción, preguntas, alta de cursos y "Mis cursos".
+Implementado y probado: catálogo, detalle, login, registro, inscripción, preguntas, alta de cursos, "Mis cursos", plan Pro con comprobante, panel admin y vencimiento.
 
 Pendiente para futuras entregas:
 
 - edición y baja lógica de cursos;
 - subida y descarga de materiales con límites del plan gratuito;
 - edición de perfil y cambio de contraseña;
-- solicitud del plan Pro con comprobante y panel de administración;
 - aceptar respuesta y cerrar hilo en el foro;
 - notificaciones.
