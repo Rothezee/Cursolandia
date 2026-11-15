@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/conn.php';
+require_once __DIR__ . '/../includes/notificaciones.php';
 
 $base = '..';
 $navPage = 'cursos';
@@ -65,6 +66,16 @@ if ($id > 0) {
                     $nuevoEstado = $curso['costo'] > 0 ? 'pendiente' : 'confirmada';
                     $conn->query("INSERT INTO inscripciones (curso_id, usuario_id, estado)
                         VALUES ($id, $usuarioId, '$nuevoEstado')");
+
+                    $quien = $_SESSION['usuario'] ?? 'Un usuario';
+                    notificar(
+                        $conn,
+                        (int) $curso['creador_id'],
+                        $nuevoEstado === 'pendiente'
+                            ? $quien . ' solicitó inscribirse en «' . $curso['titulo'] . '». Está pendiente de tu confirmación.'
+                            : $quien . ' se inscribió en «' . $curso['titulo'] . '».',
+                        'src/curso.php?id=' . $id
+                    );
                     header('Location: curso.php?id=' . $id . '&ok=' . ($nuevoEstado === 'confirmada' ? 'inscripto' : 'pendiente'));
                     exit;
                 }
@@ -94,6 +105,12 @@ if ($id > 0) {
                     } else {
                         $conn->query("UPDATE inscripciones SET estado = 'confirmada'
                             WHERE id = $inscripcionId AND curso_id = $id");
+                        notificar(
+                            $conn,
+                            $alumnoId,
+                            'Tu inscripción al curso «' . $curso['titulo'] . '» fue confirmada.',
+                            'src/curso.php?id=' . $id
+                        );
                         header('Location: curso.php?id=' . $id . '&ok=confirmado');
                         exit;
                     }
@@ -102,8 +119,16 @@ if ($id > 0) {
 
             if ($accion === 'rechazar' && $esCreador) {
                 $inscripcionId = (int) ($_POST['inscripcion_id'] ?? 0);
+                $alumnoRechazado = (int) $conn->query("SELECT usuario_id FROM inscripciones
+                    WHERE id = $inscripcionId AND curso_id = $id")->fetchColumn();
                 $conn->query("DELETE FROM inscripciones
                     WHERE id = $inscripcionId AND curso_id = $id");
+                notificar(
+                    $conn,
+                    $alumnoRechazado,
+                    'Tu inscripción al curso «' . $curso['titulo'] . '» fue rechazada.',
+                    'src/curso.php?id=' . $id
+                );
                 header('Location: curso.php?id=' . $id . '&ok=rechazado');
                 exit;
             }

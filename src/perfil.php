@@ -19,6 +19,20 @@ $form = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
 
+    if ($accion === 'leer_notificacion') {
+        $stmt = $conn->prepare('UPDATE notificaciones SET leida = 1 WHERE id = ? AND usuario_id = ?');
+        $stmt->execute([(int) ($_POST['notificacion_id'] ?? 0), $usuarioId]);
+        header('Location: perfil.php#notificaciones');
+        exit;
+    }
+
+    if ($accion === 'leer_todas') {
+        $stmt = $conn->prepare('UPDATE notificaciones SET leida = 1 WHERE usuario_id = ? AND leida = 0');
+        $stmt->execute([$usuarioId]);
+        header('Location: perfil.php#notificaciones');
+        exit;
+    }
+
     if ($accion === 'editar_perfil') {
         $form = [
             'nombre' => trim($_POST['nombre'] ?? ''),
@@ -126,6 +140,18 @@ $stmt = $conn->prepare('SELECT c.id, c.titulo, c.fecha_inicio, c.fecha_fin, c.co
     ORDER BY c.fecha_inicio DESC');
 $stmt->execute([$usuarioId]);
 $inscripciones = $stmt->fetchAll();
+
+$stmt = $conn->prepare('SELECT id, mensaje, enlace, leida, creada_en
+    FROM notificaciones
+    WHERE usuario_id = ?
+    ORDER BY creada_en DESC, id DESC
+    LIMIT 20');
+$stmt->execute([$usuarioId]);
+$notificaciones = $stmt->fetchAll();
+
+$stmt = $conn->prepare('SELECT COUNT(*) FROM notificaciones WHERE usuario_id = ? AND leida = 0');
+$stmt->execute([$usuarioId]);
+$noLeidas = (int) $stmt->fetchColumn();
 
 function fechaCorta($fecha){
     return $fecha ? date('d/m/Y', strtotime($fecha)) : '—';
@@ -284,6 +310,54 @@ function estadoCurso($inicio, $fin, $hoy){
                     </button>
                 </form>
             </details>
+
+            <div id="notificaciones">
+                <h2 class="curso-info__title">
+                    Notificaciones<?= $noLeidas > 0 ? ' (' . $noLeidas . ' sin leer)' : '' ?>
+                </h2>
+
+                <?php if (!$notificaciones) : ?>
+                    <p class="empty-state empty-state--compact">No tenés notificaciones.</p>
+                <?php else : ?>
+                    <?php if ($noLeidas > 0) : ?>
+                        <form method="post" action="perfil.php">
+                            <input type="hidden" name="accion" value="leer_todas"/>
+                            <button type="submit" class="forum-action-btn">Marcar todas como leídas</button>
+                        </form>
+                    <?php endif; ?>
+
+                    <ul class="forum-thread-list">
+                        <?php foreach ($notificaciones as $notif) : ?>
+                            <li class="forum-thread-item">
+                                <article class="forum-thread card">
+                                    <?php if (!$notif['leida']) : ?>
+                                        <div class="forum-thread__badges">
+                                            <span class="forum-badge forum-badge--abierta">Nueva</span>
+                                        </div>
+                                    <?php endif; ?>
+                                    <p class="forum-thread__excerpt">
+                                        <?php if ($notif['enlace']) : ?>
+                                            <a href="<?= $base ?>/<?= htmlspecialchars($notif['enlace']) ?>"><?= htmlspecialchars($notif['mensaje']) ?></a>
+                                        <?php else : ?>
+                                            <?= htmlspecialchars($notif['mensaje']) ?>
+                                        <?php endif; ?>
+                                    </p>
+                                    <div class="forum-thread__meta">
+                                        <span><?= fechaCorta($notif['creada_en']) ?></span>
+                                        <?php if (!$notif['leida']) : ?>
+                                            <form method="post" action="perfil.php">
+                                                <input type="hidden" name="accion" value="leer_notificacion"/>
+                                                <input type="hidden" name="notificacion_id" value="<?= (int) $notif['id'] ?>"/>
+                                                <button type="submit" class="forum-action-btn">Marcar como leída</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
+                                </article>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
 
             <div id="mis-inscripciones">
                 <h2 class="curso-info__title">Mis inscripciones</h2>
