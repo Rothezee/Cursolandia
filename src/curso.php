@@ -129,6 +129,49 @@ if ($id > 0) {
                     exit;
                 }
             }
+
+            if ($accion === 'subir_material' && $esCreador) {
+                // Límites (ajustalos a los de tu plan gratuito / pro)
+                $maxBytes = $esPro ? 100 * 1048576 : 10 * 1048576;
+                $maxArchivos = $esPro ? PHP_INT_MAX : 5;
+                $extPermitidas = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'zip', 'png', 'jpg', 'jpeg'];
+
+                $archivo = $_FILES['archivo'] ?? null;
+                $cantidadActual = (int) $conn->query("SELECT COUNT(*) FROM materiales WHERE curso_id = $id")->fetchColumn();
+
+                if (!$archivo || $archivo['error'] === UPLOAD_ERR_NO_FILE) {
+                    $mensaje = 'Elegí un archivo para subir.';
+                } elseif ($archivo['error'] === UPLOAD_ERR_INI_SIZE || $archivo['error'] === UPLOAD_ERR_FORM_SIZE) {
+                    $mensaje = 'El archivo supera el tamaño máximo permitido.';
+                } elseif ($archivo['error'] !== UPLOAD_ERR_OK) {
+                    $mensaje = 'No se pudo subir el archivo. Probá de nuevo.';
+                } elseif ($cantidadActual >= $maxArchivos) {
+                    $mensaje = 'Llegaste al máximo de archivos del plan gratuito.';
+                } elseif ($archivo['size'] > $maxBytes) {
+                    $mensaje = 'El archivo supera el tamaño máximo de ' . tamanoLegible($maxBytes) . '.';
+                } else {
+                    $nombreOriginal = basename($archivo['name']);
+                    $ext = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
+
+                    if (!in_array($ext, $extPermitidas, true)) {
+                        $mensaje = 'Tipo de archivo no permitido.';
+                    } else {
+                        $dir = __DIR__ . '/../uploads/cursos/' . $id;
+                        if (!is_dir($dir)) {
+                            mkdir($dir, 0755, true);
+                        }
+                        $nombreGuardado = bin2hex(random_bytes(16)) . '.' . $ext;
+
+                        if (move_uploaded_file($archivo['tmp_name'], $dir . '/' . $nombreGuardado)) {
+                            $stmt = $conn->prepare('INSERT INTO materiales (curso_id, nombre, ruta, tamano) VALUES (?, ?, ?, ?)');
+                            $stmt->execute([$id, $nombreOriginal, 'uploads/cursos/' . $id . '/' . $nombreGuardado, (int) $archivo['size']]);
+                            header('Location: curso.php?id=' . $id . '&ok=material#material');
+                            exit;
+                        }
+                        $mensaje = 'No se pudo guardar el archivo en el servidor.';
+                    }
+                }
+            }
         }
 
         $stmt = $conn->prepare('SELECT e.nombre
@@ -181,6 +224,8 @@ $mensajesOk = [
     'rechazado' => 'Solicitud rechazada.',
     'pregunta' => 'Pregunta publicada.',
     'creado' => 'Curso publicado correctamente.',
+    'material' => 'Archivo subido correctamente.',
+    'editado' => 'Curso actualizado correctamente.',
 ];
 $ok = $_GET['ok'] ?? '';
 if ($ok === '' && isset($_GET['creado'])) {
@@ -336,6 +381,29 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
                         <div class="curso-material card">
                             <h2 class="curso-info__title">Archivos del curso</h2>
                             <p class="auth-hint">Material subido por el docente. En plan gratuito aplican límites de cantidad y tamaño por archivo.</p>
+
+                            <?php if ($esCreador) : ?>
+                                <form class="forum-reply-form curso-material-upload" method="post" enctype="multipart/form-data"
+                                      action="curso.php?id=<?= (int) $curso['id'] ?>">
+                                    <input type="hidden" name="accion" value="subir_material"/>
+                                    <div class="auth-field">
+                                        <label class="auth-label" for="material-archivo">Subir material</label>
+                                        <input
+                                            type="file"
+                                            id="material-archivo"
+                                            name="archivo"
+                                            class="auth-input"
+                                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,.png,.jpg,.jpeg"
+                                            required
+                                        />
+                                    </div>
+                                    <button type="submit" class="auth-submit">
+                                        <span class="auth-submit__text">Subir archivo</span>
+                                        <span class="auth-submit__shine" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+
                             <ul class="curso-material-list">
                                 <?php if (!$materiales) : ?>
                                     <li class="empty-state empty-state--compact">El docente aún no publicó archivos en este curso.</li>

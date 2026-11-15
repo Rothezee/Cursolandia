@@ -96,7 +96,7 @@ $urlTodas = 'cursos.php' . ($filtrosBase ? '?' . http_build_query($filtrosBase) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/style.css"/>
     <link rel="icon" href="../img/logo.svg" type="image/x-icon">
-    <title>Cursos â€” Cursolandia</title>
+    <title>Cursos Cursolandia</title>
 </head>
 <body class="page-cursos">
     <?php require __DIR__ . '/../includes/nav.php'; ?>
@@ -118,7 +118,7 @@ $urlTodas = 'cursos.php' . ($filtrosBase ? '?' . http_build_query($filtrosBase) 
                     id="course-search"
                     name="q"
                     class="courses-search__input field-control"
-                    placeholder="Nombre del curso o etiqueta (ej. php, foro)â€¦"
+                    placeholder="Nombre del curso o etiqueta (ej. php, foro)"
                     autocomplete="off"
                     value="<?= htmlspecialchars($busqueda) ?>"
                 />
@@ -138,7 +138,7 @@ $urlTodas = 'cursos.php' . ($filtrosBase ? '?' . http_build_query($filtrosBase) 
                         <span class="filter-field__label">Acceso</span>
                         <select id="filter-access" name="acceso" class="filter-select field-control field-control--select">
                             <option value="todos"<?= $acceso === 'todos' ? ' selected' : '' ?>>Todos</option>
-                            <option value="publico"<?= $acceso === 'publico' ? ' selected' : '' ?>>PÃºblico</option>
+                            <option value="publico"<?= $acceso === 'publico' ? ' selected' : '' ?>>Publico</option>
                             <option value="privado"<?= $acceso === 'privado' ? ' selected' : '' ?>>Privado</option>
                         </select>
                     </label>
@@ -196,7 +196,7 @@ $urlTodas = 'cursos.php' . ($filtrosBase ? '?' . http_build_query($filtrosBase) 
                     </div>
                     <h2 class="card-title course-card__title"><?= htmlspecialchars($curso['titulo']) ?></h2>
                     <p class="card-text"><?= htmlspecialchars($curso['descripcion']) ?></p>
-                    <p class="course-card__meta"><?= $curso['acceso'] === 'publico' ? 'PÃºblico' : 'Privado' ?> Â· <?= htmlspecialchars($docente) ?></p>
+                    <p class="course-card__meta"><?= $curso['acceso'] === 'publico' ? 'Publico' : 'Privado' ?><?= " - ".htmlspecialchars($docente) ?></p>
                     <ul class="course-card__tags">
                         <?php foreach ($tagsCurso as $tag) : ?>
                             <li><?= htmlspecialchars($tag) ?></li>

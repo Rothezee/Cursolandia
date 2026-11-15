@@ -51,6 +51,10 @@ $puedeCrear = $esPro || $noVencidos < $limite;
             <span>Mis cursos</span>
         </nav>
 
+        <?php if (isset($_GET['eliminado'])) : ?>
+            <p class="auth-hint is-ok" role="status">Curso eliminado correctamente.</p>
+        <?php endif; ?>
+
         <header class="section-header split-header page-cursos-header">
             <div>
                 <p class="section-eyebrow">Tus cursos</p>
@@ -125,6 +129,9 @@ $puedeCrear = $esPro || $noVencidos < $limite;
 
                     <a href="curso.php?id=<?= (int) $curso['id'] ?>" class="btn-outline btn-outline--cyan course-card__cta">
                         Ver curso
+                    </a>
+                    <a href="editar-curso.php?id=<?= (int) $curso['id'] ?>" class="btn-outline btn-outline--green course-card__cta">
+                        Editar
                     </a>
                 </article>
             <?php endforeach; ?>
