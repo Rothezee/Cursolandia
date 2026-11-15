@@ -96,14 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <div class="auth-row auth-field--animate" style="--i: 2">
-                    <label class="auth-remember">
-                        <input type="checkbox" name="remember" class="filter-check"/>
-                        <span>Recordarme en este equipo</span>
-                    </label>
-                    <a href="#" class="auth-link auth-link--muted" tabindex="-1" title="Próximamente">¿Olvidaste tu contraseña?</a>
-                </div>
-
                 <button type="submit" class="auth-submit auth-field--animate" style="--i: 3">
                     <span class="auth-submit__text">Ingresar</span>
                     <span class="auth-submit__shine" aria-hidden="true"></span>

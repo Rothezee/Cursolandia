@@ -123,8 +123,8 @@ Todos usan la contraseña **`demo1234`**.
    - si el hosting no permite `CREATE DATABASE` ni `USE`, borrar las primeras líneas del archivo (`CREATE DATABASE ...` y `USE cursolandia;`) antes de importar.
 4. Subir todos los archivos del proyecto por FTP o el administrador de archivos, manteniendo la estructura de carpetas.
 5. Crear `includes/config.php` **en el servidor** con las credenciales del punto 2.
-6. Verificar que la carpeta `includes/` no sea accesible públicamente desde el navegador.
-7. Probar: home, registro, login, inscripción, alta de curso y foro.
+6. Verificar que `uploads/` tenga permisos de escritura y que `includes/` no sea accesible desde el navegador.
+7. Probar: home, registro, login, inscripción, alta de curso, foro y plan Pro.
 
 ## Estado del proyecto
 

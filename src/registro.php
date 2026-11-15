@@ -215,11 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </fieldset>
 
-                <label class="auth-remember auth-field--animate" style="--i: 4">
-                    <input type="checkbox" name="terminos" class="filter-check" required />
-                    <span>Acepto participar en la comunidad y el uso de mis datos según las normas del proyecto.</span>
-                </label>
-
                 <button type="submit" class="auth-submit auth-field--animate" style="--i: 5">
                     <span class="auth-submit__text">Crear cuenta</span>
                     <span class="auth-submit__shine" aria-hidden="true"></span>
