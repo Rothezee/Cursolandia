@@ -213,6 +213,22 @@ if ($id > 0) {
                     }
                 }
             }
+
+            if ($accion === 'borrar_material' && $esCreador) {
+                $materialId = (int) ($_POST['material_id'] ?? 0);
+                $material = $conn->query("SELECT ruta FROM materiales WHERE id = $materialId AND curso_id = $id")->fetch();
+
+                if ($material) {
+                    $rutaAbsoluta = __DIR__ . '/../' . $material['ruta'];
+                    if (is_file($rutaAbsoluta)) {
+                        unlink($rutaAbsoluta);
+                    }
+                    $conn->query("DELETE FROM materiales WHERE id = $materialId AND curso_id = $id");
+                    header('Location: curso.php?id=' . $id . '&ok=borrado#material');
+                    exit;
+                }
+            }
+
         }
 
         $stmt = $conn->prepare('SELECT e.nombre
@@ -223,7 +239,7 @@ if ($id > 0) {
         $stmt->execute([$id]);
         $tagsCurso = $stmt->fetchAll();
 
-        $stmt = $conn->prepare('SELECT nombre, ruta, tamano FROM materiales WHERE curso_id = ? ORDER BY nombre');
+        $stmt = $conn->prepare('SELECT id, nombre, ruta, tamano FROM materiales WHERE curso_id = ? ORDER BY nombre');
         $stmt->execute([$id]);
         $materiales = $stmt->fetchAll();
 
@@ -266,6 +282,7 @@ $mensajesOk = [
     'pregunta' => 'Pregunta publicada.',
     'creado' => 'Curso publicado correctamente.',
     'material' => 'Archivo subido correctamente.',
+    'borrado' => 'Archivo borrado.',
     'editado' => 'Curso actualizado correctamente.',
     'destacada' => 'Pregunta actualizada.',
     'eliminada' => 'Pregunta eliminada.',
@@ -458,7 +475,14 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
                                             <span class="curso-material-item__name"><?= htmlspecialchars($archivo['nombre']) ?></span>
                                             <span class="curso-material-item__size"><?= tamanoLegible((int) $archivo['tamano']) ?></span>
                                         </div>
-                                        <button type="button" class="forum-action-btn" disabled title="Disponible al conectar archivos en el servidor">Descargar</button>
+                                        <a href="../<?= htmlspecialchars($archivo['ruta']) ?>" class="forum-action-btn" download>Descargar</a>
+                                        <?php if ($esCreador) : ?>
+                                            <form method="post" action="curso.php?id=<?= (int) $curso['id'] ?>" style="display:inline">
+                                                <input type="hidden" name="accion" value="borrar_material"/>
+                                                <input type="hidden" name="material_id" value="<?= (int) $archivo['id'] ?>"/>
+                                                <button type="submit" class="forum-action-btn forum-action-btn--danger">Borrar</button>
+                                            </form>
+                                        <?php endif; ?>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
