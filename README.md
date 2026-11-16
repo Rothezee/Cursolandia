@@ -37,6 +37,7 @@ src/
   cursos.php         Catálogo
   curso.php          Detalle, inscripción y preguntas
   crear-curso.php    Alta de curso
+  editar-curso.php   Edición de curso
   mis-cursos.php     Cursos del usuario
   foro-hilo.php      Hilo de preguntas y respuestas
   login.php          Inicio de sesión
@@ -128,12 +129,10 @@ Todos usan la contraseña **`demo1234`**.
 
 ## Estado del proyecto
 
-Implementado y probado: catálogo, detalle, login, registro, inscripción, preguntas, alta de cursos, "Mis cursos", plan Pro con comprobante, panel admin y vencimiento.
+Implementado y probado: catálogo, detalle, login, registro, inscripción, preguntas y respuestas, alta de cursos, "Mis cursos", edición de perfil y contraseña, notificaciones, subida de material, moderación del foro (aceptar y cerrar), edición de curso y plan Pro con comprobante, panel admin y vencimiento.
 
 Pendiente para futuras entregas:
 
-- edición y baja lógica de cursos;
-- subida y descarga de materiales con límites del plan gratuito;
-- edición de perfil y cambio de contraseña;
-- aceptar respuesta y cerrar hilo en el foro;
-- notificaciones.
+- edición y baja lógica completa de cursos;
+- recomendaciones por intereses (issue #12);
+- deploy en un hosting real (issue #13).
