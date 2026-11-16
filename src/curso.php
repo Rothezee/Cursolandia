@@ -143,6 +143,7 @@ if ($id > 0) {
 
             if ($accion === 'eliminar_pregunta' && $esCreador) {
                 $preguntaId = (int) ($_POST['pregunta_id'] ?? 0);
+                $conn->query("DELETE FROM respuestas WHERE pregunta_id = $preguntaId");
                 $conn->query("DELETE FROM preguntas WHERE id = $preguntaId AND curso_id = $id");
                 header('Location: curso.php?id=' . $id . '&ok=eliminada#foro');
                 exit;
