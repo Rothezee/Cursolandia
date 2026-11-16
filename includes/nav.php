@@ -10,6 +10,14 @@ $perfil = $base === '' ? 'src/perfil.php' : 'perfil.php';
 $misCursosUrl = $base === '' ? 'src/mis-cursos.php' : 'mis-cursos.php';
 $navPage = $navPage ?? 'inicio'; // inicio | cursos | planes | login | registro | perfil
 $loggedIn = !empty($_SESSION['usuario_id']);
+
+$noLeidasNav = 0;
+if ($loggedIn) {
+    require_once __DIR__ . '/conn.php';
+    $stmtNav = $conn->prepare('SELECT COUNT(*) FROM notificaciones WHERE usuario_id = ? AND leida = 0');
+    $stmtNav->execute([(int) $_SESSION['usuario_id']]);
+    $noLeidasNav = (int) $stmtNav->fetchColumn();
+}
 ?>
 <nav class="site-nav" aria-label="Principal">
     <div class="nav-inner">
@@ -38,7 +46,7 @@ $loggedIn = !empty($_SESSION['usuario_id']);
             <?php endif; ?>
             <li>
                 <?php if ($loggedIn) : ?>
-                    <a href="<?= htmlspecialchars($perfil) ?>" class="login-button<?= $navPage === 'perfil' ? ' is-active' : '' ?>"<?= $navPage === 'perfil' ? ' aria-current="page"' : '' ?>>Perfil</a>
+                    <a href="<?= htmlspecialchars($perfil) ?>" class="login-button<?= $navPage === 'perfil' ? ' is-active' : '' ?>"<?= $navPage === 'perfil' ? ' aria-current="page"' : '' ?>>Perfil<?php if ($noLeidasNav > 0) : ?> <span class="nav-badge" title="Notificaciones sin leer"><?= $noLeidasNav ?></span><?php endif; ?></a>
                 <?php else : ?>
                     <a href="<?= htmlspecialchars($login) ?>" class="login-button<?= $navPage === 'login' ? ' is-active' : '' ?>"<?= $navPage === 'login' ? ' aria-current="page"' : '' ?>>Ingresar</a>
                 <?php endif; ?>

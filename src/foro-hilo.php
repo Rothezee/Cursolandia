@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/conn.php';
+require_once __DIR__ . '/../includes/notificaciones.php';
 
 $base = '..';
 $navPage = 'foro';
@@ -10,6 +11,7 @@ $error = '';
 $hilo = null;
 $respuestas = [];
 $logueado = !empty($_SESSION['usuario_id']);
+$puedeModerar = false;
 
 if ($id > 0) {
     $stmt = $conn->prepare('SELECT p.*, c.titulo AS curso, c.creador_id, u.usuario AS autor
@@ -21,27 +23,79 @@ if ($id > 0) {
     $hilo = $stmt->fetch();
 }
 
+if ($hilo) {
+    // Solo el docente creador del curso puede moderar
+    $puedeModerar = $logueado && (int) $_SESSION['usuario_id'] === (int) $hilo['creador_id'];
+}
+
 if ($hilo && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $cuerpo = trim($_POST['body'] ?? '');
+    $accion = $_POST['accion'] ?? 'responder';
+    $volver = 'Location: foro-hilo.php?curso=' . (int) $hilo['curso_id'] . '&id=' . $id;
 
-    if (!$logueado) {
-        $error = 'Necesitás iniciar sesión para responder.';
-    } elseif ($hilo['estado'] === 'cerrada') {
-        $error = 'El hilo está cerrado y no admite respuestas.';
-    } elseif ($cuerpo === '') {
-        $error = 'Escribí una respuesta antes de enviar.';
-    } else {
-        $stmt = $conn->prepare('SELECT autor_id FROM respuestas WHERE pregunta_id = ? ORDER BY id DESC LIMIT 1');
-        $stmt->execute([$id]);
-        $ultimoAutor = $stmt->fetchColumn();
+    if ($accion === 'aceptar' && $puedeModerar) {
+        $respuestaId = (int) ($_POST['respuesta_id'] ?? 0);
+        $stmt = $conn->prepare('SELECT autor_id, aceptada FROM respuestas WHERE id = ? AND pregunta_id = ?');
+        $stmt->execute([$respuestaId, $id]);
+        $objetivo = $stmt->fetch();
 
-        if ($ultimoAutor !== false && (int) $ultimoAutor === (int) $_SESSION['usuario_id']) {
-            $error = 'No podés responder dos veces seguidas. Editá tu última respuesta o esperá a otro participante.';
+        if ($objetivo) {
+            // Una sola respuesta aceptada por hilo
+            $stmt = $conn->prepare('UPDATE respuestas SET aceptada = (id = ?) WHERE pregunta_id = ?');
+            $stmt->execute([$respuestaId, $id]);
+
+            if (!$objetivo['aceptada'] && (int) $objetivo['autor_id'] !== (int) $_SESSION['usuario_id']) {
+                notificar(
+                    $conn,
+                    (int) $objetivo['autor_id'],
+                    'Tu respuesta fue aceptada en «' . $hilo['titulo'] . '».',
+                    'src/foro-hilo.php?id=' . $id
+                );
+            }
+        }
+        header($volver);
+        exit;
+    }
+
+    if ($accion === 'cambiar_estado' && $puedeModerar) {
+        $nuevoEstado = ($_POST['estado'] ?? '') === 'cerrada' ? 'cerrada' : 'abierta';
+        $stmt = $conn->prepare('UPDATE preguntas SET estado = ? WHERE id = ?');
+        $stmt->execute([$nuevoEstado, $id]);
+        header($volver);
+        exit;
+    }
+
+    if ($accion === 'responder') {
+        $cuerpo = trim($_POST['body'] ?? '');
+
+        if (!$logueado) {
+            $error = 'Necesitás iniciar sesión para responder.';
+        } elseif ($hilo['estado'] === 'cerrada') {
+            $error = 'El hilo está cerrado y no admite respuestas.';
+        } elseif ($cuerpo === '') {
+            $error = 'Escribí una respuesta antes de enviar.';
         } else {
-            $stmt = $conn->prepare('INSERT INTO respuestas (pregunta_id, autor_id, cuerpo) VALUES (?, ?, ?)');
-            $stmt->execute([$id, (int) $_SESSION['usuario_id'], $cuerpo]);
-            header('Location: foro-hilo.php?curso=' . (int) $hilo['curso_id'] . '&id=' . $id);
-            exit;
+            $stmt = $conn->prepare('SELECT autor_id FROM respuestas WHERE pregunta_id = ? ORDER BY id DESC LIMIT 1');
+            $stmt->execute([$id]);
+            $ultimoAutor = $stmt->fetchColumn();
+
+            if ($ultimoAutor !== false && (int) $ultimoAutor === (int) $_SESSION['usuario_id']) {
+                $error = 'No podés responder dos veces seguidas. Editá tu última respuesta o esperá a otro participante.';
+            } else {
+                $stmt = $conn->prepare('INSERT INTO respuestas (pregunta_id, autor_id, cuerpo) VALUES (?, ?, ?)');
+                $stmt->execute([$id, (int) $_SESSION['usuario_id'], $cuerpo]);
+
+                if ((int) $hilo['autor_id'] !== (int) $_SESSION['usuario_id']) {
+                    notificar(
+                        $conn,
+                        (int) $hilo['autor_id'],
+                        'Nueva respuesta en «' . $hilo['titulo'] . '».',
+                        'src/foro-hilo.php?id=' . $id
+                    );
+                }
+
+                header($volver);
+                exit;
+            }
         }
     }
 }
@@ -90,6 +144,9 @@ function fechaCorta($fecha)
             <article class="forum-question card">
                 <div class="forum-thread__head">
                     <div class="forum-thread__badges">
+                        <?php if ($hilo['destacada']) : ?>
+                            <span class="forum-badge">Destacada</span>
+                        <?php endif; ?>
                         <span class="forum-badge forum-badge--<?= $hilo['estado'] ?>"><?= $hilo['estado'] === 'cerrada' ? 'Cerrada' : 'Abierta' ?></span>
                     </div>
                 </div>
@@ -99,10 +156,31 @@ function fechaCorta($fecha)
                     <span>Pregunta de <strong><?= htmlspecialchars($hilo['autor']) ?></strong></span>
                     <span><?= fechaCorta($hilo['creada_en']) ?></span>
                 </footer>
-                <div class="forum-question__mod-actions">
-                    <button type="button" class="forum-action-btn" disabled title="Docente: próximamente">Destacar</button>
-                    <button type="button" class="forum-action-btn forum-action-btn--danger" disabled title="Docente: próximamente">Eliminar pregunta</button>
-                </div>
+
+                <?php if ($puedeModerar) : ?>
+                    <div class="forum-question__mod-actions">
+                        <form method="post" action="foro-hilo.php?curso=<?= (int) $hilo['curso_id'] ?>&amp;id=<?= (int) $hilo['id'] ?>">
+                            <input type="hidden" name="accion" value="cambiar_estado"/>
+                            <input type="hidden" name="estado" value="<?= $hilo['estado'] === 'cerrada' ? 'abierta' : 'cerrada' ?>"/>
+                            <button type="submit" class="forum-action-btn">
+                                <?= $hilo['estado'] === 'cerrada' ? 'Reabrir hilo' : 'Cerrar hilo' ?>
+                            </button>
+                        </form>
+                        <form method="post" action="curso.php?id=<?= (int) $hilo['curso_id'] ?>">
+                            <input type="hidden" name="accion" value="destacar"/>
+                            <input type="hidden" name="pregunta_id" value="<?= (int) $hilo['id'] ?>"/>
+                            <button type="submit" class="forum-action-btn">
+                                <?= $hilo['destacada'] ? 'Quitar destacado' : 'Destacar' ?>
+                            </button>
+                        </form>
+                        <form method="post" action="curso.php?id=<?= (int) $hilo['curso_id'] ?>"
+                              onsubmit="return confirm('¿Eliminar esta pregunta y sus respuestas? No se puede deshacer.');">
+                            <input type="hidden" name="accion" value="eliminar_pregunta"/>
+                            <input type="hidden" name="pregunta_id" value="<?= (int) $hilo['id'] ?>"/>
+                            <button type="submit" class="forum-action-btn forum-action-btn--danger">Eliminar pregunta</button>
+                        </form>
+                    </div>
+                <?php endif; ?>
             </article>
 
             <section class="forum-answers-section" aria-labelledby="answers-heading">
@@ -134,7 +212,16 @@ function fechaCorta($fecha)
                                 </div>
                             </header>
                             <p class="forum-answer__body"><?= htmlspecialchars($respuesta['cuerpo']) ?></p>
-                            <footer class="forum-answer__foot"><?= fechaCorta($respuesta['creada_en']) ?></footer>
+                            <footer class="forum-answer__foot">
+                                <?= fechaCorta($respuesta['creada_en']) ?>
+                                <?php if ($puedeModerar && !$aceptada) : ?>
+                                    <form method="post" action="foro-hilo.php?curso=<?= (int) $hilo['curso_id'] ?>&amp;id=<?= (int) $hilo['id'] ?>">
+                                        <input type="hidden" name="accion" value="aceptar"/>
+                                        <input type="hidden" name="respuesta_id" value="<?= (int) $respuesta['id'] ?>"/>
+                                        <button type="submit" class="forum-action-btn">Aceptar respuesta</button>
+                                    </form>
+                                <?php endif; ?>
+                            </footer>
                         </article>
                     <?php endforeach; ?>
                 </div>
@@ -153,6 +240,7 @@ function fechaCorta($fecha)
                         <p class="auth-hint is-error" role="alert"><?= htmlspecialchars($error) ?></p>
                     <?php endif; ?>
                     <form id="reply-form" class="forum-reply-form" action="foro-hilo.php?curso=<?= (int) $hilo['curso_id'] ?>&amp;id=<?= (int) $hilo['id'] ?>" method="post">
+                        <input type="hidden" name="accion" value="responder"/>
                         <label class="auth-label" for="reply-body">Escribí tu respuesta</label>
                         <textarea id="reply-body" name="body" class="auth-input auth-textarea" rows="4" placeholder="Aportá una solución clara…" required></textarea>
                         <button type="submit" class="auth-submit">

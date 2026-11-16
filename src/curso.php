@@ -133,6 +133,21 @@ if ($id > 0) {
                 exit;
             }
 
+            if ($accion === 'destacar' && $esCreador) {
+                $preguntaId = (int) ($_POST['pregunta_id'] ?? 0);
+                $conn->query("UPDATE preguntas SET destacada = 1 - destacada
+                    WHERE id = $preguntaId AND curso_id = $id");
+                header('Location: curso.php?id=' . $id . '&ok=destacada#foro');
+                exit;
+            }
+
+            if ($accion === 'eliminar_pregunta' && $esCreador) {
+                $preguntaId = (int) ($_POST['pregunta_id'] ?? 0);
+                $conn->query("DELETE FROM preguntas WHERE id = $preguntaId AND curso_id = $id");
+                header('Location: curso.php?id=' . $id . '&ok=eliminada#foro');
+                exit;
+            }
+
             if ($accion === 'preguntar') {
                 $tituloPregunta = trim($_POST['titulo'] ?? '');
                 $cuerpoPregunta = trim($_POST['cuerpo'] ?? '');
@@ -211,13 +226,13 @@ if ($id > 0) {
         $stmt->execute([$id]);
         $materiales = $stmt->fetchAll();
 
-        $stmt = $conn->prepare("SELECT p.id, p.titulo, p.cuerpo, p.estado, p.creada_en, u.usuario AS autor,
+        $stmt = $conn->prepare("SELECT p.id, p.titulo, p.cuerpo, p.estado, p.destacada, p.creada_en, u.usuario AS autor,
                 (SELECT COUNT(*) FROM respuestas r WHERE r.pregunta_id = p.id) AS respuestas,
                 (SELECT COUNT(*) FROM respuestas r WHERE r.pregunta_id = p.id AND r.aceptada = 1) AS aceptadas
             FROM preguntas p
             JOIN usuarios u ON u.id = p.autor_id
             WHERE p.curso_id = ?
-            ORDER BY p.creada_en DESC");
+            ORDER BY p.destacada DESC, p.creada_en DESC");
         $stmt->execute([$id]);
         $preguntas = $stmt->fetchAll();
 
@@ -251,6 +266,8 @@ $mensajesOk = [
     'creado' => 'Curso publicado correctamente.',
     'material' => 'Archivo subido correctamente.',
     'editado' => 'Curso actualizado correctamente.',
+    'destacada' => 'Pregunta actualizada.',
+    'eliminada' => 'Pregunta eliminada.',
 ];
 $ok = $_GET['ok'] ?? '';
 if ($ok === '' && isset($_GET['creado'])) {
@@ -527,6 +544,9 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
                                 <li class="forum-thread-item" data-titulo="<?= htmlspecialchars($pregunta['titulo']) ?>" data-cuerpo="<?= htmlspecialchars($pregunta['cuerpo']) ?>" data-estado="<?= $pregunta['estado'] ?>">
                                     <article class="forum-thread card">
                                         <div class="forum-thread__badges">
+                                            <?php if ($pregunta['destacada']) : ?>
+                                                <span class="forum-badge">Destacada</span>
+                                            <?php endif; ?>
                                             <span class="forum-badge forum-badge--<?= $pregunta['estado'] ?>"><?= $pregunta['estado'] === 'cerrada' ? 'Cerrada' : 'Abierta' ?></span>
                                             <?php if ((int) $pregunta['aceptadas'] > 0) : ?>
                                                 <span class="forum-badge forum-badge--accepted">Respuesta aceptada</span>
@@ -541,6 +561,23 @@ $hayCupo = $curso && ($curso['cupo'] === null || $inscriptos < $curso['cupo']);
                                             <span><?= $respuestas ?> respuesta<?= $respuestas === 1 ? '' : 's' ?></span>
                                             <span><?= fechaCorta($pregunta['creada_en']) ?></span>
                                         </div>
+                                        <?php if ($esCreador) : ?>
+                                            <div class="forum-question__mod-actions">
+                                                <form method="post" action="curso.php?id=<?= (int) $curso['id'] ?>">
+                                                    <input type="hidden" name="accion" value="destacar"/>
+                                                    <input type="hidden" name="pregunta_id" value="<?= (int) $pregunta['id'] ?>"/>
+                                                    <button type="submit" class="forum-action-btn">
+                                                        <?= $pregunta['destacada'] ? 'Quitar destacado' : 'Destacar' ?>
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="curso.php?id=<?= (int) $curso['id'] ?>"
+                                                      onsubmit="return confirm('¿Eliminar esta pregunta y sus respuestas? No se puede deshacer.');">
+                                                    <input type="hidden" name="accion" value="eliminar_pregunta"/>
+                                                    <input type="hidden" name="pregunta_id" value="<?= (int) $pregunta['id'] ?>"/>
+                                                    <button type="submit" class="forum-action-btn forum-action-btn--danger">Eliminar</button>
+                                                </form>
+                                            </div>
+                                        <?php endif; ?>
                                     </article>
                                 </li>
                             <?php endforeach; ?>
