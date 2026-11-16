@@ -29,8 +29,7 @@ PHP procedural + MySQL (PDO), HTML, CSS y JavaScript sin frameworks ni Composer.
 index.php            Home
 cursolandia.sql      Esquema y datos de prueba
 includes/
-  config.example.php Plantilla de configuración
-  conn.php           Conexión PDO (usa config.php)
+  conn.php           Conexión PDO (editá acá las credenciales)
   nav.php            Navegación común
   footer.php         Pie común
 src/
@@ -70,13 +69,7 @@ img/                 Logos e imágenes
 
    O importarlo desde phpMyAdmin.
 
-3. Crear `includes/config.php` a partir de la plantilla:
-
-   ```bash
-   cp includes/config.example.php includes/config.php
-   ```
-
-   Y completar los datos reales:
+3. Editar `includes/conn.php` con los datos de tu servidor:
 
    ```php
    $servername = 'localhost';
@@ -84,8 +77,6 @@ img/                 Logos e imágenes
    $username = 'root';
    $password = '';
    ```
-
-   `includes/config.php` no se versiona: cada entorno usa sus propias credenciales.
 
 4. Abrir `http://localhost/Cursolandia/` en el navegador.
 
@@ -123,7 +114,7 @@ Todos usan la contraseña **`demo1234`**.
    - en phpMyAdmin, seleccionar la base creada e importar `cursolandia.sql`;
    - si el hosting no permite `CREATE DATABASE` ni `USE`, borrar las primeras líneas del archivo (`CREATE DATABASE ...` y `USE cursolandia;`) antes de importar.
 4. Subir todos los archivos del proyecto por FTP o el administrador de archivos, manteniendo la estructura de carpetas.
-5. Crear `includes/config.php` **en el servidor** con las credenciales del punto 2.
+5. Editar `includes/conn.php` **en el servidor** con las credenciales del punto 2 (no subir las credenciales locales por FTP).
 6. Verificar que `uploads/` tenga permisos de escritura y que `includes/` no sea accesible desde el navegador.
 7. Probar: home, registro, login, inscripción, alta de curso, foro y plan Pro.
 
